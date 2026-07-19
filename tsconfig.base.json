@@ -14,7 +14,8 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@mobills/convex": ["packages/convex/src/index.ts"]
+      "@mobills/convex": ["packages/convex/src/index.ts"],
+      "@mobills/integration-splitwise": ["packages/integrations/splitwise/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -19,7 +19,9 @@ starting with a CLI that seeds and manages the underlying data.
 ├── apps/
 │   └── web/       # @mobills/web — Vite landing page (mobills.io, GitHub Pages)
 ├── packages/
-│   └── convex/    # @mobills/convex — schema + Convex functions
+│   └── convex/         # @mobills/convex — schema + Convex functions
+│   └── integrations/
+│       └── splitwise/  # @mobills/integration-splitwise — Splitwise expense capabilities
 ├── tools/
 │   └── cli/       # @mobills/cli — the `mobills` CLI
 ```
@@ -31,11 +33,18 @@ Copy `.env.example` to `.env` and fill in the values:
 | Variable                  | Required | Description                                                                 |
 | ------------------------- | -------- | --------------------------------------------------------------------------- |
 | `CONVEX_URL`              | yes      | Convex deployment URL (from `npx convex dev`).                              |
-| `CLERK_SESSION_TOKEN`     | yes      | Clerk session token minted from the JWT template named exactly `convex`.    |
+| `CLERK_PUBLISHABLE_KEY`   | yes\*    | Required for `mobills login` (hotloads Clerk.js in the browser).            |
+| `CLERK_SESSION_TOKEN`     | no       | Legacy/fallback token from the `convex` JWT template. Prefer `mobills login`. |
 | `CONVEX_DEPLOY_KEY`       | no       | Used by `convex deploy` in CI/non-interactive environments.                 |
-| `CLERK_PUBLISHABLE_KEY`   | no       | Clerk publishable key.                                                       |
 | `CLERK_SECRET_KEY`        | no       | Clerk secret key.                                                            |
 | `CLERK_JWT_ISSUER_DOMAIN` | no       | Clerk issuer / Frontend API URL; must match the `convex` JWT template.      |
+| `SPLITWISE_API_KEY`       | no\*     | Splitwise personal API key; required to use the Splitwise capabilities.      |
+| `SPLITWISE_API_BASE_URL`  | no       | Override the Splitwise API base URL (defaults to the v3.0 endpoint).         |
+
+\* Required only when invoking the `@mobills/integration-splitwise` capabilities.
+
+\* `CLERK_PUBLISHABLE_KEY` is required to sign in with `mobills login`. If you
+instead supply a `CLERK_SESSION_TOKEN` directly, it is not needed.
 
 Secrets always come from the environment — never commit a real `.env`.
 
@@ -92,13 +101,39 @@ pnpm install
 # 1. Connect Convex (creates a deployment, sets CONVEX_URL, regenerates the API):
 pnpm --filter @mobills/convex dev
 
-# 2. In another shell, run the CLI:
-pnpm --filter @mobills/cli start --help
+# 2. In another shell, sign in and run the CLI:
+pnpm --filter @mobills/cli start login
 pnpm --filter @mobills/cli start account create --name "T-Mobile Family"
 pnpm --filter @mobills/cli start account list
 pnpm --filter @mobills/cli start member add --account <accountId> --name "Alex"
 pnpm --filter @mobills/cli start member list --account <accountId>
 ```
+
+Prefer running the CLI as a plain `mobills` command? See
+[Running the CLI locally](./docs/cli/local-install.md) to build it and put it on
+your `PATH` (`pnpm cli:link`), then unlink it (`pnpm cli:unlink`) to fall back to
+the published package.
+
+### Signing in
+
+The CLI authenticates to Convex as a Clerk user. The easiest way is a browser
+sign-in:
+
+```bash
+pnpm --filter @mobills/cli start login    # opens the browser, caches a token
+pnpm --filter @mobills/cli start whoami   # show the signed-in user
+pnpm --filter @mobills/cli start logout   # remove the cached token
+```
+
+`login` serves a small sign-in page on `127.0.0.1`, hotloads Clerk.js using
+`CLERK_PUBLISHABLE_KEY`, mints a token from the `convex` JWT template, and caches
+it at `~/.config/mobills/credentials.json` (mode `0600`). Commands use this
+cached token automatically, falling back to `CLERK_SESSION_TOKEN` if set.
+
+> The `convex` JWT template defaults to a **60-second** lifetime, so cached
+> tokens expire quickly. Run commands right after `login`, or raise the
+> template's token lifetime in Clerk for a smoother experience. If a command
+> reports it is not authenticated, run `login` again.
 
 ### Convex code generation
 
@@ -124,3 +159,9 @@ and every change to a publishable package MUST ship with an Nx version plan
 (generate one with `pnpm plan`). Both are enforced in CI. See
 [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md) for the full PR checklist and
 [AGENTS.md](./AGENTS.md) for the working agreements.
+
+## Docs
+
+- [Splitwise integration](./docs/splitwise-integration.md) — how mobills posts
+  individual and group expenses to Splitwise and splits them by percentage,
+  equally, or by exact amount.

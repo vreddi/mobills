@@ -1,0 +1,63 @@
+@import 'tailwindcss';
+
+/*
+ * mobills.io — dark-only developer theme.
+ * Token names follow the shadcn convention because the vendored beui motion
+ * components (src/components/motion) style themselves with bg-primary,
+ * border-border, text-muted-foreground, etc.
+ */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-background: #09090b;
+  --color-foreground: #f4f4f5;
+
+  --color-card: #101014;
+  --color-card-foreground: #f4f4f5;
+
+  --color-border: #26262c;
+  --color-input: #26262c;
+  --color-ring: #635bff;
+
+  --color-muted: #17171b;
+  --color-muted-foreground: #a1a1aa;
+
+  --color-primary: #635bff;
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: #17171b;
+  --color-secondary-foreground: #f4f4f5;
+
+  --color-accent: #17171b;
+  --color-accent-foreground: #f4f4f5;
+
+  /* Splitwise brand teal, used on the integrations cards. */
+  --color-splitwise: #5bc5a7;
+}
+
+/* Some beui components (tilt-card glare) read bare CSS vars directly. */
+:root {
+  --foreground: #f4f4f5;
+  --background: #09090b;
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-background text-foreground font-sans antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in srgb, #635bff 35%, transparent);
+}
+
+/* Thin dark scrollbars for the docs sidebar / code blocks. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2e2e35 transparent;
+}

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import { registerAccountCommands } from './commands/account.js';
+import { registerAuthCommands } from './commands/auth.js';
 import { registerMemberCommands } from './commands/member.js';
 
 const program = new Command();
@@ -12,6 +13,7 @@ program
   )
   .version('0.0.0');
 
+registerAuthCommands(program);
 registerAccountCommands(program);
 registerMemberCommands(program);
 
