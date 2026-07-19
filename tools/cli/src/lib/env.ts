@@ -1,18 +1,41 @@
 import { config as loadDotenv } from 'dotenv';
 import { existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 
-// Load env from the monorepo root: .env first, then .env.local overrides.
-const rootDir = resolve(process.cwd());
-for (const file of ['.env', '.env.local']) {
-  const path = resolve(rootDir, file);
-  if (existsSync(path)) {
-    loadDotenv({ path, override: file === '.env.local' });
+// Walk up from `startDir` until the pnpm workspace manifest is found, marking
+// the monorepo root. Falls back to `startDir` if no manifest is found.
+function findWorkspaceRoot(startDir: string): string {
+  let dir = startDir;
+  for (;;) {
+    if (existsSync(resolve(dir, 'pnpm-workspace.yaml'))) {
+      return dir;
+    }
+    const parent = dirname(dir);
+    if (parent === dir) {
+      return startDir;
+    }
+    dir = parent;
   }
 }
-// Also attempt loading relative to this package (when run from a subdir).
-loadDotenv();
+
+// Load env from the monorepo root so values in the root `.env` are found even
+// when the CLI runs with a different cwd (e.g. `pnpm --filter @mobills/cli
+// start`, which executes with cwd set to the package directory). The current
+// working directory is searched afterwards so a local run can override.
+const workspaceRoot = findWorkspaceRoot(dirname(fileURLToPath(import.meta.url)));
+const searchDirs = Array.from(
+  new Set([workspaceRoot, resolve(process.cwd())]),
+);
+for (const dir of searchDirs) {
+  for (const file of ['.env', '.env.local']) {
+    const path = resolve(dir, file);
+    if (existsSync(path)) {
+      loadDotenv({ path, override: file === '.env.local' });
+    }
+  }
+}
 
 const envSchema = z.object({
   CONVEX_URL: z.string().url('CONVEX_URL must be a valid URL'),
