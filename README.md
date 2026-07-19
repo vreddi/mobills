@@ -103,6 +103,11 @@ pnpm --filter @mobills/cli start member add --account <accountId> --name "Alex"
 pnpm --filter @mobills/cli start member list --account <accountId>
 ```
 
+Prefer running the CLI as a plain `mobills` command? See
+[Running the CLI locally](./docs/cli/local-install.md) to build it and put it on
+your `PATH` (`pnpm cli:link`), then unlink it (`pnpm cli:unlink`) to fall back to
+the published package.
+
 ### Signing in
 
 The CLI authenticates to Convex as a Clerk user. The easiest way is a browser

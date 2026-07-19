@@ -9,6 +9,9 @@
     "typecheck": "nx run-many -t typecheck",
     "lint": "nx run-many -t lint",
     "test": "nx run-many -t test",
+    "cli:build": "pnpm --filter @mobills/cli build",
+    "cli:link": "pnpm cli:build && node tools/cli/scripts/global-link.mjs link",
+    "cli:unlink": "node tools/cli/scripts/global-link.mjs unlink",
     "nx": "nx"
   },
   "devDependencies": {
