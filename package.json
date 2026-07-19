@@ -1,0 +1,18 @@
+{
+  "name": "mobile-bills",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Manage a shared T-Mobile bill split across a group of friends.",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "build": "nx run-many -t build",
+    "typecheck": "nx run-many -t typecheck",
+    "lint": "nx run-many -t lint",
+    "nx": "nx"
+  },
+  "devDependencies": {
+    "@nx/js": "latest",
+    "nx": "latest",
+    "typescript": "^5.6.3"
+  }
+}
