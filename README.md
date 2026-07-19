@@ -19,8 +19,9 @@ starting with a CLI that seeds and manages the underlying data.
 ├── apps/
 │   └── web/       # @mobills/web — Vite landing page (mobills.io, GitHub Pages)
 ├── packages/
-│   └── convex/    # @mobills/convex — schema + Convex functions
-│   └── splitwise/ # @mobills/splitwise — Splitwise expense capabilities
+│   └── convex/         # @mobills/convex — schema + Convex functions
+│   └── integrations/
+│       └── splitwise/  # @mobills/splitwise — Splitwise expense capabilities
 ├── tools/
 │   └── cli/       # @mobills/cli — the `mobills` CLI
 ```

@@ -6,7 +6,7 @@ document describes how mobills integrates with Splitwise to create expenses and
 split them across the group.
 
 The integration lives in the **`@mobills/splitwise`** package
-(`packages/splitwise/`). It is a standalone, reusable capability: it is **not yet
+(`packages/integrations/splitwise/`). It is a standalone, reusable capability: it is **not yet
 wired into the `mobills` CLI** (`tools/cli`). It can be invoked directly today via
 a small runner (see [Invoking it](#invoking-it-today)) and imported by other
 packages later.
