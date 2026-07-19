@@ -62,7 +62,7 @@ jobs:
 
       - name: Version, changelog and tag
         if: steps.plans.outputs.pending == 'true'
-        run: pnpm nx release --yes --skip-publish ${{ (github.event_name == 'workflow_dispatch' && inputs.first-release) && '--first-release' || '' }}
+        run: pnpm nx release --skip-publish ${{ (github.event_name == 'workflow_dispatch' && inputs.first-release) && '--first-release' || '' }}
 
       - name: Push release commit and tags
         if: steps.plans.outputs.pending == 'true'
