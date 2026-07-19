@@ -66,6 +66,27 @@ Non-interactively you can pass the bump and message directly, e.g.
 `pnpm plan patch -m "fix(cli): correct member lookup"`. Never create or edit files
 under `.nx/version-plans/` by hand.
 
+### Version plan descriptions are public changelog content
+
+The description passed to `pnpm plan` (the `-m "..."` message) is not internal
+scratch text — it is committed to `.nx/version-plans/` and later rolled up
+verbatim into generated **changelogs and release notes**, which are public.
+
+**Never include personal or internal-only information in a version plan
+description**, including but not limited to:
+
+- Real names of friends, group members, or other individuals.
+- Phone numbers, email addresses, or physical addresses.
+- Account numbers, billing identifiers, or other financial details.
+- Internal tool names, employee-only details, private URLs, credentials, or
+  tokens.
+
+Write version plan descriptions the way you'd write a public open-source
+changelog entry: describe the user-facing change or fix in plain, generic
+language (e.g. `feat(cli): add support for tracking multiple accounts` rather
+than referencing a specific person's account or phone number). This applies to
+humans and agents alike.
+
 ## Toolchain
 
 - **Monorepo:** [Nx](https://nx.dev)
