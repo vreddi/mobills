@@ -26,9 +26,12 @@
   },
   "dependencies": {
     "@clerk/backend": "^1.21.0",
+    "chalk": "^5.3.0",
+    "cli-table3": "^0.6.5",
     "commander": "^12.1.0",
     "convex": "^1.17.0",
     "dotenv": "^16.4.7",
+    "ora": "^8.1.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {

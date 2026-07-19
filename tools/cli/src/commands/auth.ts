@@ -1,10 +1,14 @@
+import chalk from 'chalk';
+import Table from 'cli-table3';
 import { Command } from 'commander';
+import ora from 'ora';
 import {
   clearCredentials,
   credentialsPath,
   readCredentials,
   saveToken,
 } from '../lib/credentials.js';
+import { fetchClerkUser } from '../lib/clerkUser.js';
 import { browserLogin } from '../lib/login.js';
 
 export function registerAuthCommands(program: Command): void {
@@ -45,22 +49,48 @@ export function registerAuthCommands(program: Command): void {
 
   program
     .command('whoami')
-    .description('Show the signed-in Clerk user from the cached token')
-    .action(() => {
+    .description('Show details about the signed-in user')
+    .action(async () => {
       const creds = readCredentials();
       if (!creds) {
         console.log('Not signed in. Run `mobills login`.');
         return;
       }
+
+      const spinner = ora('Fetching account details').start();
+      const profile = creds.subject
+        ? await fetchClerkUser(creds.subject)
+        : null;
+      spinner.stop();
+
       const expired =
         creds.expiresAt !== undefined && creds.expiresAt <= Date.now();
-      console.log(`Clerk user: ${creds.subject ?? '(unknown)'}`);
-      if (creds.expiresAt !== undefined) {
-        const label = expired ? 'expired' : 'valid until';
-        console.log(`Token ${label} ${new Date(creds.expiresAt).toLocaleString()}`);
-      }
+
+      const name = profile?.name ?? creds.name ?? chalk.dim('(unknown)');
+      const email = profile?.email ?? creds.email ?? chalk.dim('(unknown)');
+      const signInMethod = profile?.signInMethod ?? chalk.dim('(unknown)');
+      const status = expired
+        ? chalk.red('expired')
+        : chalk.green('signed in');
+      const tokenLine = creds.expiresAt
+        ? `${expired ? 'expired' : 'valid until'} ${new Date(creds.expiresAt).toLocaleString()}`
+        : 'unknown expiry';
+
+      const table = new Table({
+        style: { head: ['cyan'] },
+      });
+      table.push(
+        [chalk.bold('Name'), name],
+        [chalk.bold('Email'), email],
+        [chalk.bold('Signed in via'), signInMethod],
+        [chalk.bold('Status'), status],
+        [chalk.bold('Session'), tokenLine],
+        [chalk.bold('User ID'), chalk.dim(creds.subject ?? '(unknown)')],
+      );
+
+      console.log(`\n${table.toString()}\n`);
       if (expired) {
-        console.log('Token is expired \u2014 run `mobills login` to refresh.');
+        console.log(chalk.yellow('Token is expired \u2014 run `mobills login` to refresh.'));
       }
     });
 }

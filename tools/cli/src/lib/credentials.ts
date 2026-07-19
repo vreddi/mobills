@@ -14,6 +14,9 @@ export interface StoredCredentials {
   expiresAt?: number;
   /** Clerk user id (JWT `sub`), if decodable. */
   subject?: string;
+  /** Best-effort name/email claims decoded straight from the token, if present. */
+  name?: string;
+  email?: string;
 }
 
 function configDir(): string {
@@ -26,26 +29,45 @@ export function credentialsPath(): string {
   return join(configDir(), 'credentials.json');
 }
 
-function decodeJwt(token: string): { exp?: number; sub?: string } {
+interface DecodedJwtClaims {
+  exp?: number;
+  sub?: string;
+  name?: string;
+  email?: string;
+}
+
+function decodeJwt(token: string): DecodedJwtClaims {
   try {
     const payload = token.split('.')[1];
     if (!payload) {
       return {};
     }
     const json = Buffer.from(payload, 'base64url').toString('utf8');
-    const claims = JSON.parse(json) as { exp?: number; sub?: string };
-    return { exp: claims.exp, sub: claims.sub };
+    const claims = JSON.parse(json) as {
+      exp?: number;
+      sub?: string;
+      name?: string;
+      email?: string;
+    };
+    return {
+      exp: claims.exp,
+      sub: claims.sub,
+      name: claims.name,
+      email: claims.email,
+    };
   } catch {
     return {};
   }
 }
 
 export function saveToken(token: string): StoredCredentials {
-  const { exp, sub } = decodeJwt(token);
+  const { exp, sub, name, email } = decodeJwt(token);
   const creds: StoredCredentials = {
     token,
     expiresAt: exp !== undefined ? exp * 1000 : undefined,
     subject: sub,
+    name,
+    email,
   };
   mkdirSync(configDir(), { recursive: true });
   writeFileSync(credentialsPath(), `${JSON.stringify(creds, null, 2)}\n`, {
