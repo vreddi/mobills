@@ -1,5 +1,6 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "defaultBase": "develop",
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
@@ -16,6 +17,25 @@
     },
     "typecheck": {
       "cache": true
+    }
+  },
+  "release": {
+    "projectsRelationship": "independent",
+    "projects": ["tag:npm:publishable"],
+    "versionPlans": {
+      "ignorePatternsForPlanCheck": [
+        "**/*.spec.ts",
+        "**/*.test.ts",
+        "**/*.md",
+        "**/tsconfig*.json",
+        "**/*.config.{ts,js,mjs,cjs}"
+      ]
+    },
+    "version": {
+      "preVersionCommand": "pnpm nx run-many -t build"
+    },
+    "changelog": {
+      "projectChangelogs": true
     }
   }
 }

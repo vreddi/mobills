@@ -41,3 +41,73 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+
+  commits:
+    name: Conventional commits
+    # Commit-message linting only applies to the commits a PR introduces.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Lint commit messages
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          pattern='^(feat|fix|docs|chore|refactor|test|build|ci|perf|style|revert)(\([a-z0-9._-]+\))?(!)?: .+'
+          status=0
+          while IFS= read -r sha; do
+            [ -z "$sha" ] && continue
+            subject=$(git log -1 --format=%s "$sha")
+            # Allow merge commits, which GitHub may inject for PRs.
+            case "$subject" in
+              "Merge "*) continue ;;
+            esac
+            if ! printf '%s' "$subject" | grep -Eq "$pattern"; then
+              echo "::error::Non-conventional commit $sha: $subject"
+              status=1
+            else
+              echo "ok: $subject"
+            fi
+          done < <(git rev-list "$BASE_SHA".."$HEAD_SHA")
+          if [ "$status" -ne 0 ]; then
+            echo ""
+            echo "Every commit must follow Conventional Commits: https://www.conventionalcommits.org/"
+            echo "See docs/CONTRIBUTING.md for details."
+          fi
+          exit $status
+
+  version-plan:
+    name: Version plan
+    # A version plan is only meaningful relative to the PR's changes.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Derive base and head SHAs
+        uses: nrwl/nx-set-shas@v4
+
+      - name: Check for a version plan
+        run: pnpm nx release plan:check

@@ -1,10 +1,22 @@
 {
   "name": "@mobills/cli",
   "version": "0.0.0",
-  "private": true,
   "type": "module",
+  "description": "CLI to seed and manage the shared mobills T-Mobile tracking account and its members.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vreddi/mobills.git",
+    "directory": "tools/cli"
+  },
   "bin": {
     "mobills": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "tsup",
@@ -14,13 +26,13 @@
   },
   "dependencies": {
     "@clerk/backend": "^1.21.0",
-    "@mobills/convex": "workspace:*",
     "commander": "^12.1.0",
     "convex": "^1.17.0",
     "dotenv": "^16.4.7",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@mobills/convex": "workspace:*",
     "@types/node": "^22.10.0",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",

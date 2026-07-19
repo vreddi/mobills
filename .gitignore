@@ -1,7 +1,8 @@
 node_modules
 dist
 out-tsc
-.nx
+.nx/cache
+.nx/workspace-data
 .env
 .env.local
 .convex

@@ -119,5 +119,8 @@ pnpm nx run-many -t build
 
 ## Contributing
 
-Every commit MUST follow [Conventional Commits](https://www.conventionalcommits.org/).
-See [AGENTS.md](./AGENTS.md) for the full working agreements.
+Every commit MUST follow [Conventional Commits](https://www.conventionalcommits.org/),
+and every change to a publishable package MUST ship with an Nx version plan
+(generate one with `pnpm plan`). Both are enforced in CI. See
+[docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md) for the full PR checklist and
+[AGENTS.md](./AGENTS.md) for the working agreements.

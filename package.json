@@ -9,7 +9,11 @@
     "typecheck": "nx run-many -t typecheck",
     "lint": "nx run-many -t lint",
     "test": "nx run-many -t test",
-    "nx": "nx"
+    "nx": "nx",
+    "plan": "nx release plan",
+    "plan:check": "nx release plan:check",
+    "release": "nx release",
+    "release:publish": "nx release publish"
   },
   "devDependencies": {
     "@nx/js": "latest",

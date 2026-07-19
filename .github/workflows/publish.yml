@@ -1,0 +1,76 @@
+name: Publish
+
+# Applies the accumulated Nx Release version plans, then publishes the packages
+# tagged `npm:publishable` (currently only @mobills/cli) to the @mobills npm org.
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+    inputs:
+      first-release:
+        description: "Treat this as the first release (no prior git tags on disk)."
+        type: boolean
+        default: false
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write # push the release commit + tags back to develop
+  id-token: write # npm provenance
+
+jobs:
+  publish:
+    name: Version and publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check for pending version plans
+        id: plans
+        run: |
+          if ls .nx/version-plans/*.md >/dev/null 2>&1; then
+            echo "pending=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "pending=false" >> "$GITHUB_OUTPUT"
+            echo "No pending version plans; nothing to release."
+          fi
+
+      - name: Configure git author
+        if: steps.plans.outputs.pending == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Version, changelog and tag
+        if: steps.plans.outputs.pending == 'true'
+        run: pnpm nx release --yes --skip-publish ${{ (github.event_name == 'workflow_dispatch' && inputs.first-release) && '--first-release' || '' }}
+
+      - name: Push release commit and tags
+        if: steps.plans.outputs.pending == 'true'
+        run: git push --follow-tags origin HEAD:develop
+
+      - name: Publish to npm
+        if: steps.plans.outputs.pending == 'true'
+        run: pnpm nx release publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: "true"
