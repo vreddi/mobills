@@ -21,7 +21,7 @@ starting with a CLI that seeds and manages the underlying data.
 ├── packages/
 │   └── convex/         # @mobills/convex — schema + Convex functions
 │   └── integrations/
-│       └── splitwise/  # @mobills/splitwise — Splitwise expense capabilities
+│       └── splitwise/  # @mobills/integration-splitwise — Splitwise expense capabilities
 ├── tools/
 │   └── cli/       # @mobills/cli — the `mobills` CLI
 ```
@@ -41,7 +41,7 @@ Copy `.env.example` to `.env` and fill in the values:
 | `SPLITWISE_API_KEY`       | no\*     | Splitwise personal API key; required to use the Splitwise capabilities.      |
 | `SPLITWISE_API_BASE_URL`  | no       | Override the Splitwise API base URL (defaults to the v3.0 endpoint).         |
 
-\* Required only when invoking the `@mobills/splitwise` capabilities.
+\* Required only when invoking the `@mobills/integration-splitwise` capabilities.
 
 Secrets always come from the environment — never commit a real `.env`.
 

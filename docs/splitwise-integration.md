@@ -5,7 +5,7 @@ Today that reconciliation lives in [Splitwise](https://www.splitwise.com). This
 document describes how mobills integrates with Splitwise to create expenses and
 split them across the group.
 
-The integration lives in the **`@mobills/splitwise`** package
+The integration lives in the **`@mobills/integration-splitwise`** package
 (`packages/integrations/splitwise/`). It is a standalone, reusable capability: it is **not yet
 wired into the `mobills` CLI** (`tools/cli`). It can be invoked directly today via
 a small runner (see [Invoking it](#invoking-it-today)) and imported by other
@@ -86,7 +86,7 @@ client inspects the payload and raises `SplitwiseApiError` with a readable messa
 ## Using it from code
 
 ```ts
-import { SplitwiseClient, configFromEnv, createSharedExpense } from '@mobills/splitwise';
+import { SplitwiseClient, configFromEnv, createSharedExpense } from '@mobills/integration-splitwise';
 
 const client = SplitwiseClient.fromConfig(configFromEnv());
 
@@ -116,16 +116,16 @@ The capability ships with a standalone runner (separate from the `mobills` CLI):
 
 ```bash
 # Verify credentials
-pnpm --filter @mobills/splitwise demo -- whoami
+pnpm --filter @mobills/integration-splitwise demo -- whoami
 
 # Preview a percentage split without posting
-pnpm --filter @mobills/splitwise demo -- create-expense \
+pnpm --filter @mobills/integration-splitwise demo -- create-expense \
   --description "T-Mobile — March 2026" --cost 180 \
   --split percentage --payer 111 \
   -p 111:40 -p 222:30 -p 333:30 --dry-run
 
 # Post an equal split into a group
-pnpm --filter @mobills/splitwise demo -- create-expense \
+pnpm --filter @mobills/integration-splitwise demo -- create-expense \
   --description "T-Mobile — March 2026" --cost 180 \
   --group 12345 --split equal --payer 111 \
   -p 111 -p 222 -p 333

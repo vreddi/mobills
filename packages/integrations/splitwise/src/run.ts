@@ -6,8 +6,8 @@
  * the capabilities in this package can be invoked and verified today, without
  * wiring them into the main CLI command tree yet.
  *
- *   pnpm --filter @mobills/splitwise demo -- whoami
- *   pnpm --filter @mobills/splitwise demo -- create-expense \
+ *   pnpm --filter @mobills/integration-splitwise demo -- whoami
+ *   pnpm --filter @mobills/integration-splitwise demo -- create-expense \
  *     --description "T-Mobile — March 2026" --cost 180 --split percentage \
  *     --payer 111 -p 111:40 -p 222:30 -p 333:30 --dry-run
  */
@@ -132,7 +132,7 @@ interface ExpenseOpts {
 const program = new Command();
 program
   .name('splitwise')
-  .description('Standalone runner for the @mobills/splitwise capabilities');
+  .description('Standalone runner for the @mobills/integration-splitwise capabilities');
 
 program
   .command('whoami')
@@ -215,7 +215,7 @@ program
 async function main(): Promise<void> {
   loadEnvFiles();
   // `pnpm run <script> -- <args>` forwards a literal `--`; drop leading ones so
-  // both `pnpm --filter @mobills/splitwise demo -- whoami` and a direct
+  // both `pnpm --filter @mobills/integration-splitwise demo -- whoami` and a direct
   // `tsx src/run.ts whoami` invocation behave the same.
   const args = process.argv.slice(2);
   while (args[0] === '--') {

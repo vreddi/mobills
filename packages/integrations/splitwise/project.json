@@ -1,5 +1,5 @@
 {
-  "name": "@mobills/splitwise",
+  "name": "@mobills/integration-splitwise",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "packages/integrations/splitwise/src",

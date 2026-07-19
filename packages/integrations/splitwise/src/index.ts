@@ -1,5 +1,5 @@
 /**
- * Public surface of the `@mobills/splitwise` capability package.
+ * Public surface of the `@mobills/integration-splitwise` capability package.
  */
 export { SplitwiseClient, SplitwiseApiError } from './client.js';
 export type {

@@ -1,5 +1,5 @@
 {
-  "name": "@mobills/splitwise",
+  "name": "@mobills/integration-splitwise",
   "version": "0.0.0",
   "private": true,
   "type": "module",
