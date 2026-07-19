@@ -34,6 +34,9 @@
 
   /* Splitwise brand teal, used on the integrations cards. */
   --color-splitwise: #5bc5a7;
+
+  /* T-Mobile brand magenta, used on the providers cards. */
+  --color-tmobile: #e20074;
 }
 
 /* Some beui components (tilt-card glare) read bare CSS vars directly. */

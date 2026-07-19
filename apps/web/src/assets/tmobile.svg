@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="94px" height="94px" viewBox="0 0 94 94" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>T-Mobile</title>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect fill="#E20074" x="0" y="0" width="94" height="94" rx="20"></rect>
+        <path d="M20,24 L74,24 L74,40 L56,40 L56,70 L38,70 L38,40 L20,40 Z" fill="#FFFFFF"></path>
+    </g>
+</svg>

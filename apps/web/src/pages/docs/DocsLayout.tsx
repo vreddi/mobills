@@ -2,11 +2,14 @@ import { useMemo, useState } from 'react';
 import { Link, Outlet } from '@tanstack/react-router';
 import { Github, Search } from 'lucide-react';
 import { Logo } from '@/components/site/Logo';
+import splitwiseLogo from '@/assets/splitwise.svg';
+import tmobileLogo from '@/assets/tmobile.svg';
 
 interface DocLink {
   to: string;
   label: string;
   keywords?: string;
+  icon?: string;
 }
 
 interface DocSection {
@@ -24,6 +27,17 @@ const SECTIONS: DocSection[] = [
     ],
   },
   {
+    title: 'Providers',
+    links: [
+      {
+        to: '/docs/providers/tmobile',
+        label: 'T-Mobile',
+        keywords: 'provider carrier bill source input plan line',
+        icon: tmobileLogo,
+      },
+    ],
+  },
+  {
     title: 'CLI reference',
     links: [
       { to: '/docs/commands/account', label: 'mobills account', keywords: 'create list plan' },
@@ -33,7 +47,12 @@ const SECTIONS: DocSection[] = [
   {
     title: 'Integrations',
     links: [
-      { to: '/docs/integrations/splitwise', label: 'Splitwise', keywords: 'expense sync friends split' },
+      {
+        to: '/docs/integrations/splitwise',
+        label: 'Splitwise',
+        keywords: 'expense sync friends split',
+        icon: splitwiseLogo,
+      },
     ],
   },
 ];
@@ -112,12 +131,19 @@ export function DocsLayout() {
                       <Link
                         to={link.to}
                         activeOptions={{ exact: link.to === '/docs' }}
-                        className="block rounded-md px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                        className="flex items-center gap-2 rounded-md px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                         activeProps={{
                           className:
-                            'block rounded-md px-2.5 py-1.5 text-sm bg-primary/10 font-medium text-primary',
+                            'flex items-center gap-2 rounded-md px-2.5 py-1.5 text-sm bg-primary/10 font-medium text-primary',
                         }}
                       >
+                        {link.icon && (
+                          <img
+                            src={link.icon}
+                            alt=""
+                            className="h-4 w-4 shrink-0 rounded"
+                          />
+                        )}
                         {link.label}
                       </Link>
                     </li>
