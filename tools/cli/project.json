@@ -1,0 +1,23 @@
+{
+  "name": "@mobile-bills/cli",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "tools/cli/src",
+  "implicitDependencies": ["@mobile-bills/convex"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsup",
+        "cwd": "tools/cli"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p tsconfig.json",
+        "cwd": "tools/cli"
+      }
+    }
+  }
+}
