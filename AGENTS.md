@@ -58,7 +58,7 @@ stay consistent.
 
 The repo is an Nx monorepo organized around three top-level entry points:
 
-```
+```text
 /
 ├── apps/        # Deployable applications (e.g. the mobills.io landing page)
 ├── tools/       # Executable tooling and CLIs (e.g. the mobills CLI)
