@@ -43,6 +43,29 @@ Use an optional scope to point at the affected package, e.g.
 This rule applies to humans and agents alike. Do not squash-merge in a way that
 drops the conventional commit message.
 
+### Version plans — required for every project change
+
+This repo uses [Nx Release **version plans**](https://nx.dev/docs/guides/nx-release/file-based-versioning-version-plans)
+for **independent** package versioning and changelog generation. Publishable
+packages are versioned from version plan files stored in `.nx/version-plans/`.
+
+**Every change that touches a publishable project MUST ship with a version plan.**
+CI runs `nx release plan:check` and fails the PR if a touched project is missing a
+plan (test files, markdown, and config files are ignored — see
+`release.versionPlans.ignorePatternsForPlanCheck` in `nx.json`).
+
+**Agents MUST NOT hand-author version plan files.** Always generate them with the
+Nx tooling so the file name, location, and Front Matter are correct:
+
+```bash
+pnpm plan          # interactive: pick project(s), bump type, and description
+pnpm plan:check    # verify a plan exists for the current changes
+```
+
+Non-interactively you can pass the bump and message directly, e.g.
+`pnpm plan patch -m "fix(cli): correct member lookup"`. Never create or edit files
+under `.nx/version-plans/` by hand.
+
 ## Toolchain
 
 - **Monorepo:** [Nx](https://nx.dev)
@@ -89,4 +112,6 @@ A detailed CLI tool that gets the group's data into the application:
 - Respect the toolchain above — do not introduce alternative package managers,
   monorepo tools, auth providers, or datastores without being asked.
 - Follow Conventional Commits for every commit (see above).
+- Generate a version plan with `pnpm plan` for any change that touches a
+  publishable project — never hand-author files under `.nx/version-plans/`.
 - Prefer opening focused PRs over large, mixed-scope changes.
