@@ -1,0 +1,9 @@
+node_modules
+dist
+out-tsc
+.nx
+.env
+.env.local
+.convex
+*.log
+.DS_Store
