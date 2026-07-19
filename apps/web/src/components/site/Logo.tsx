@@ -1,14 +1,19 @@
 import { Link } from '@tanstack/react-router';
 import { cn } from '@/lib/utils';
 
+/**
+ * Typographic wordmark: "mobills" with a blurple full stop. The dot doubles
+ * as the brand accent and picks up a subtle glow on hover.
+ */
 export function Logo({ className }: { className?: string }) {
   return (
-    <Link to="/" className={cn('group inline-flex items-center gap-2.5', className)}>
-      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary font-mono text-sm font-semibold text-primary-foreground shadow-[0_0_20px_-4px] shadow-primary/60 transition-shadow group-hover:shadow-primary/90">
-        m
-      </span>
-      <span className="text-[15px] font-semibold tracking-tight text-foreground">
-        mobills
+    <Link
+      to="/"
+      className={cn('group inline-flex items-baseline text-[17px] font-bold tracking-tight', className)}
+    >
+      <span className="text-foreground">mobills</span>
+      <span className="text-primary transition-[text-shadow] group-hover:[text-shadow:0_0_12px_var(--color-primary)]">
+        .
       </span>
     </Link>
   );

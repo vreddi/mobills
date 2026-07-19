@@ -8,6 +8,7 @@ import {
   TerminalSquare,
   Users,
 } from 'lucide-react';
+import splitwiseLogo from '@/assets/splitwise.svg';
 import { Button } from '@/components/motion/button/base';
 import { ScrollReveal } from '@/components/motion/scroll-reveal';
 import { TextReveal } from '@/components/motion/text-reveal';
@@ -201,13 +202,12 @@ function Integrations() {
           <TiltCard max={6} className="h-full border border-splitwise/30 bg-card">
             <div className="flex h-full flex-col p-8">
               <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-splitwise/15 font-bold text-splitwise">
-                  S
-                </span>
-                <div>
-                  <h3 className="font-semibold">Splitwise</h3>
-                  <span className="font-mono text-xs text-splitwise">live</span>
-                </div>
+                <img
+                  src={splitwiseLogo}
+                  alt=""
+                  className="h-10 w-10 rounded-xl"
+                />
+                <h3 className="font-semibold">Splitwise</h3>
               </div>
               <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
                 The only integration you need on bill day. Map each member to a
