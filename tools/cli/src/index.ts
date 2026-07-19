@@ -4,6 +4,8 @@ import { registerAccountCommands } from './commands/account.js';
 import { registerAuthCommands } from './commands/auth.js';
 import { registerMemberCommands } from './commands/member.js';
 
+const CLI_VERSION = '0.0.0';
+
 const program = new Command();
 
 program
@@ -11,7 +13,15 @@ program
   .description(
     'CLI to seed and manage the shared T-Mobile bill tracking data (Convex + Clerk).',
   )
-  .version('0.0.0');
+  // Commander only supports one short flag per option, so -V/--version comes
+  // from .version() and -v is registered separately as an alias below.
+  .version(CLI_VERSION, '-V, --version', 'output the version number')
+  .option('-v', 'output the version number (alias for --version)');
+
+program.on('option:v', () => {
+  process.stdout.write(`${CLI_VERSION}\n`);
+  process.exit(0);
+});
 
 registerAuthCommands(program);
 registerAccountCommands(program);
