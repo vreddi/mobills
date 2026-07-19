@@ -19,7 +19,9 @@ starting with a CLI that seeds and manages the underlying data.
 ├── apps/
 │   └── web/       # @mobills/web — Vite landing page (mobills.io, GitHub Pages)
 ├── packages/
-│   └── convex/    # @mobills/convex — schema + Convex functions
+│   └── convex/         # @mobills/convex — schema + Convex functions
+│   └── integrations/
+│       └── splitwise/  # @mobills/integration-splitwise — Splitwise expense capabilities
 ├── tools/
 │   └── cli/       # @mobills/cli — the `mobills` CLI
 ```
@@ -36,6 +38,10 @@ Copy `.env.example` to `.env` and fill in the values:
 | `CLERK_PUBLISHABLE_KEY`   | no       | Clerk publishable key.                                                       |
 | `CLERK_SECRET_KEY`        | no       | Clerk secret key.                                                            |
 | `CLERK_JWT_ISSUER_DOMAIN` | no       | Clerk issuer / Frontend API URL; must match the `convex` JWT template.      |
+| `SPLITWISE_API_KEY`       | no\*     | Splitwise personal API key; required to use the Splitwise capabilities.      |
+| `SPLITWISE_API_BASE_URL`  | no       | Override the Splitwise API base URL (defaults to the v3.0 endpoint).         |
+
+\* Required only when invoking the `@mobills/integration-splitwise` capabilities.
 
 Secrets always come from the environment — never commit a real `.env`.
 
@@ -121,3 +127,9 @@ pnpm nx run-many -t build
 
 Every commit MUST follow [Conventional Commits](https://www.conventionalcommits.org/).
 See [AGENTS.md](./AGENTS.md) for the full working agreements.
+
+## Docs
+
+- [Splitwise integration](./docs/splitwise-integration.md) — how mobills posts
+  individual and group expenses to Splitwise and splits them by percentage,
+  equally, or by exact amount.
