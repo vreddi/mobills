@@ -1,4 +1,4 @@
-# mobile-bills
+# mobills
 
 Manage a shared T-Mobile bill split across a group of friends. This monorepo
 mirrors the T-Mobile account and its members into a purpose-built application,
@@ -16,10 +16,12 @@ starting with a CLI that seeds and manages the underlying data.
 
 ```
 /
+├── apps/
+│   └── web/       # @mobills/web — Vite landing page (mobills.io, GitHub Pages)
 ├── packages/
-│   └── convex/    # @mobile-bills/convex — schema + Convex functions
+│   └── convex/    # @mobills/convex — schema + Convex functions
 ├── tools/
-│   └── cli/       # @mobile-bills/cli — the `mobile-bills` CLI
+│   └── cli/       # @mobills/cli — the `mobills` CLI
 ```
 
 ## Environment variables
@@ -48,7 +50,7 @@ Install once (`npm install -g clerk` or `brew install clerk/stable/clerk`), then
 from the repo root:
 
 ```bash
-clerk apps create "mobile-bills"   # or: clerk link  (pick an existing app)
+clerk apps create "mobills"   # or: clerk link  (pick an existing app)
 clerk env pull --file .env          # writes CLERK_PUBLISHABLE_KEY + CLERK_SECRET_KEY
 clerk whoami                        # confirm the logged-in user and linked app
 ```
@@ -88,14 +90,14 @@ template, and grab a session token — all from the dashboard — then fill in `
 pnpm install
 
 # 1. Connect Convex (creates a deployment, sets CONVEX_URL, regenerates the API):
-pnpm --filter @mobile-bills/convex dev
+pnpm --filter @mobills/convex dev
 
 # 2. In another shell, run the CLI:
-pnpm --filter @mobile-bills/cli start --help
-pnpm --filter @mobile-bills/cli start account create --name "T-Mobile Family"
-pnpm --filter @mobile-bills/cli start account list
-pnpm --filter @mobile-bills/cli start member add --account <accountId> --name "Alex"
-pnpm --filter @mobile-bills/cli start member list --account <accountId>
+pnpm --filter @mobills/cli start --help
+pnpm --filter @mobills/cli start account create --name "T-Mobile Family"
+pnpm --filter @mobills/cli start account list
+pnpm --filter @mobills/cli start member add --account <accountId> --name "Alex"
+pnpm --filter @mobills/cli start member list --account <accountId>
 ```
 
 ### Convex code generation
@@ -105,7 +107,7 @@ builds without a live Convex deployment. After connecting Convex, regenerate it
 against your deployment:
 
 ```bash
-pnpm --filter @mobile-bills/convex codegen
+pnpm --filter @mobills/convex codegen
 ```
 
 ## Validate

@@ -1,10 +1,10 @@
 # AGENTS.md
 
-Guidance for AI agents and human contributors working in the **mobile-bills** repository.
+Guidance for AI agents and human contributors working in the **mobills** repository.
 
 ## What this project is
 
-`mobile-bills` helps manage a shared T-Mobile bill that is split across a group
+`mobills` helps manage a shared T-Mobile bill that is split across a group
 of friends. Today the group is tracked in Splitwise, where the repo owner posts a
 monthly group transaction and requests money from each member. This project moves
 that workflow into a purpose-built application, starting with a CLI that seeds and
@@ -56,16 +56,18 @@ stay consistent.
 
 ## Workspace layout
 
-The repo is an Nx monorepo organized around two top-level entry points:
+The repo is an Nx monorepo organized around three top-level entry points:
 
-```
+```text
 /
-├── tools/       # Executable tooling and CLIs (e.g. the mobile-bills CLI)
+├── apps/        # Deployable applications (e.g. the mobills.io landing page)
+├── tools/       # Executable tooling and CLIs (e.g. the mobills CLI)
 ├── packages/    # Shared libraries and reusable packages
 ├── AGENTS.md
 └── ...
 ```
 
+- `apps/` — deployable applications (web front-ends, services).
 - `tools/` — standalone tools and command-line apps.
 - `packages/` — shared, importable libraries consumed by tools and apps.
 

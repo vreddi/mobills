@@ -14,7 +14,7 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@mobile-bills/convex": ["packages/convex/src/index.ts"]
+      "@mobills/convex": ["packages/convex/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

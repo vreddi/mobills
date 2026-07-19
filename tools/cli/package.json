@@ -1,10 +1,10 @@
 {
-  "name": "@mobile-bills/cli",
+  "name": "@mobills/cli",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "bin": {
-    "mobile-bills": "dist/index.js"
+    "mobills": "dist/index.js"
   },
   "scripts": {
     "build": "tsup",
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@clerk/backend": "^1.21.0",
-    "@mobile-bills/convex": "workspace:*",
+    "@mobills/convex": "workspace:*",
     "commander": "^12.1.0",
     "convex": "^1.17.0",
     "dotenv": "^16.4.7",

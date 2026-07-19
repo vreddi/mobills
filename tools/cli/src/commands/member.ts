@@ -1,4 +1,4 @@
-import { api, type Id } from '@mobile-bills/convex';
+import { api, type Id } from '@mobills/convex';
 import { Command } from 'commander';
 import { getConvexClient } from '../lib/convex.js';
 
