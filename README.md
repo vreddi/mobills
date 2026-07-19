@@ -55,12 +55,24 @@ clerk whoami                        # confirm the logged-in user and linked app
 
 Still set manually (the CLI does not do these for you):
 
+- **The `convex` JWT template** — Convex needs a Clerk JWT template named exactly
+  `convex` whose claims include `{ "aud": "convex" }` (matching `applicationID:
+  'convex'` in `auth.config.ts`). Create it in one command with the Clerk CLI:
+
+  ```bash
+  clerk api -X POST /jwt_templates \
+    -d '{"name":"convex","claims":{"aud":"convex"}}'
+  ```
+
+  `name` and `claims` are the only required fields; Clerk fills the rest with the
+  same defaults as its dashboard "Convex" preset (`RS256`, `lifetime` 60s,
+  `allowed_clock_skew` 5s). Keep the name lowercase `convex` and `aud` as a plain
+  string (not an array), or Convex won't recognize the token. (Alternatively,
+  activating Clerk's Convex integration at `dashboard.clerk.com/apps/setup/convex`
+  bakes `aud: "convex"` into the session token, and no template is needed.)
 - **`CLERK_JWT_ISSUER_DOMAIN`** — your instance's Frontend API / issuer URL
   (e.g. `https://<subdomain>.clerk.accounts.dev`). It must match the `convex`
   JWT template issuer. Convex also displays this after you add the template.
-- **The `convex` JWT template** — create a JWT template named exactly `convex`
-  in the Clerk dashboard (Convex reads it via `auth.config.ts`). Advanced: you
-  can script this with `clerk api -X POST /jwt_templates -d '{"name":"convex",...}'`.
 - **`CLERK_SESSION_TOKEN`** — a session token minted from the `convex` template.
   This requires a signed-in session; `clerk impersonate <user>` gives you a
   sign-in URL to obtain one, then copy the `convex`-template token into `.env`.
