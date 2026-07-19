@@ -84,6 +84,23 @@ Still set manually (the CLI does not do these for you):
 - **`CLERK_JWT_ISSUER_DOMAIN`** — your instance's Frontend API / issuer URL
   (e.g. `https://<subdomain>.clerk.accounts.dev`). It must match the `convex`
   JWT template issuer. Convex also displays this after you add the template.
+
+  > **This value must also be set on the Convex deployment itself**, not just in
+  > your local `.env`. `auth.config.ts` runs on the Convex server and reads
+  > `process.env.CLERK_JWT_ISSUER_DOMAIN` from the deployment's environment. If
+  > it is unset there, Convex reports it has **no auth providers configured** and
+  > every authenticated command fails with
+  > `NoAuthProvider: No auth provider found matching the given token`. Set it
+  > (and re-push so the auth config is re-evaluated) with:
+  >
+  > ```bash
+  > pnpm --filter @mobills/convex exec convex env set \
+  >   CLERK_JWT_ISSUER_DOMAIN "https://<subdomain>.clerk.accounts.dev"
+  > pnpm --filter @mobills/convex dev --once   # re-evaluate auth.config.ts
+  > ```
+  >
+  > List what the deployment currently has with
+  > `pnpm --filter @mobills/convex exec convex env list`.
 - **`CLERK_SESSION_TOKEN`** — a session token minted from the `convex` template.
   This requires a signed-in session; `clerk impersonate <user>` gives you a
   sign-in URL to obtain one, then copy the `convex`-template token into `.env`.
