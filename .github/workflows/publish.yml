@@ -2,10 +2,11 @@ name: Publish
 
 # Applies the accumulated Nx Release version plans, then publishes the packages
 # tagged `npm:publishable` (currently only @mobills/cli) to the @mobills npm org.
+#
+# This runs on demand only. Version plans accumulate on `develop` as PRs merge,
+# and a maintainer triggers this workflow to cut a single batched release that
+# rolls all pending plans into one version bump, changelog entry, and publish.
 on:
-  push:
-    branches:
-      - develop
   workflow_dispatch:
     inputs:
       first-release:
