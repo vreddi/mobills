@@ -4,15 +4,20 @@
  *
  * THIS CODE IS AUTOMATICALLY GENERATED.
  *
- * This file mirrors the output of `npx convex codegen`. Run
- * `pnpm --filter @mobills/convex codegen` after connecting Convex to
- * regenerate it against the deployment.
+ * To regenerate, run `npx convex dev`.
+ * @module
  */
 
-import { anyApi } from 'convex/server';
+import { anyApi, componentsGeneric } from "convex/server";
 
 /**
  * A utility for referencing Convex functions in your app's API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = api.myModule.myFunction;
+ * ```
  */
 export const api = anyApi;
 export const internal = anyApi;
+export const components = componentsGeneric();
