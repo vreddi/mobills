@@ -6,7 +6,7 @@ import { registerMemberCommands } from './commands/member.js';
 const program = new Command();
 
 program
-  .name('mobile-bills')
+  .name('mobills')
   .description(
     'CLI to seed and manage the shared T-Mobile bill tracking data (Convex + Clerk).',
   )

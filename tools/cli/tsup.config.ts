@@ -9,5 +9,5 @@ export default defineConfig({
   clean: true,
   sourcemap: true,
   // Bundle the workspace convex package (its entry is TypeScript source).
-  noExternal: [/@mobile-bills\/convex/],
+  noExternal: [/@mobills\/convex/],
 });

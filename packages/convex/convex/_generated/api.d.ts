@@ -6,7 +6,7 @@
  *
  * This file mirrors the output of `npx convex codegen`. It is committed so the
  * workspace typechecks and builds without a live Convex deployment. Run
- * `pnpm --filter @mobile-bills/convex codegen` after connecting Convex to
+ * `pnpm --filter @mobills/convex codegen` after connecting Convex to
  * regenerate it against the deployment.
  */
 

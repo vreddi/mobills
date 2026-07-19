@@ -1,5 +1,5 @@
 {
-  "name": "@mobile-bills/convex",
+  "name": "@mobills/convex",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "packages/convex/convex",

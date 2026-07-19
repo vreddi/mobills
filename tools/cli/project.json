@@ -1,9 +1,9 @@
 {
-  "name": "@mobile-bills/cli",
+  "name": "@mobills/cli",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "tools/cli/src",
-  "implicitDependencies": ["@mobile-bills/convex"],
+  "implicitDependencies": ["@mobills/convex"],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
