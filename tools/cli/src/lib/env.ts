@@ -39,7 +39,9 @@ for (const dir of searchDirs) {
 
 const envSchema = z.object({
   CONVEX_URL: z.string().url('CONVEX_URL must be a valid URL'),
-  CLERK_SESSION_TOKEN: z.string().min(1, 'CLERK_SESSION_TOKEN is required'),
+  // Optional: legacy/fallback auth. Prefer `mobills login`, which caches a
+  // token outside the environment. Still honored when no cached token exists.
+  CLERK_SESSION_TOKEN: z.string().optional(),
   CLERK_SECRET_KEY: z.string().optional(),
   CLERK_PUBLISHABLE_KEY: z.string().optional(),
   CLERK_JWT_ISSUER_DOMAIN: z.string().optional(),
@@ -69,4 +71,19 @@ export function loadEnv(): Env {
 
   cachedEnv = parsed.data;
   return cachedEnv;
+}
+
+/**
+ * Returns the Clerk publishable key, which `mobills login` needs to hotload
+ * Clerk.js in the browser. Throws a helpful error when it is not configured.
+ */
+export function getPublishableKey(): string {
+  const key = process.env.CLERK_PUBLISHABLE_KEY;
+  if (!key || key.length === 0) {
+    throw new Error(
+      'CLERK_PUBLISHABLE_KEY is required for `mobills login`. ' +
+        'Add it to your .env (Clerk dashboard \u2192 API keys).',
+    );
+  }
+  return key;
 }
