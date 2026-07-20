@@ -25,6 +25,31 @@ export function DocsMemberCommands() {
           { flag: '--phone <phone>', description: 'Member phone number.' },
           { flag: '--line-type <type>', description: "Line type: 'primary' or 'additional'." },
           { flag: '--splitwise-id <id>', description: 'Splitwise user id used by the Splitwise integration.' },
+          { flag: '--splitwise-group-id <id>', description: 'Splitwise group id, when the group settles together in one Splitwise group.' },
+        ]}
+      />
+      <H2>member edit</H2>
+      <P>
+        Update an existing member — most commonly to attach Splitwise ids
+        after the fact. Each field has a matching <Code>--clear-*</Code> flag
+        to remove it.
+      </P>
+      <CodeBlock
+        label="Terminal"
+        code={`$ mobills member edit --member mem_priya_01 \\
+    --splitwise-id 18442 --splitwise-group-id 30741
+✓ Updated member mem_priya_01`}
+      />
+      <OptionsTable
+        rows={[
+          { flag: '--member <memberId>', required: true, description: 'Member id to edit (from member list).' },
+          { flag: '--name <name>', description: 'New member name.' },
+          { flag: '--email <email>', description: 'New member email.' },
+          { flag: '--phone <phone>', description: 'New member phone number.' },
+          { flag: '--line-type <type>', description: "New line type: 'primary' or 'additional'." },
+          { flag: '--splitwise-id <id>', description: 'New Splitwise user id.' },
+          { flag: '--splitwise-group-id <id>', description: 'New Splitwise group id for group settling.' },
+          { flag: '--clear-email, --clear-phone, --clear-line-type, --clear-splitwise-id, --clear-splitwise-group-id', description: 'Remove the corresponding field.' },
         ]}
       />
       <H2>member list</H2>
@@ -32,10 +57,10 @@ export function DocsMemberCommands() {
       <CodeBlock
         label="Terminal"
         code={`$ mobills member list --account fam_plan_01
-  NAME     LINE         SPLITWISE
-  Vish     primary      —
-  Priya    additional   18442
-  Rohan    additional   20917`}
+  NAME     LINE         SPLITWISE   GROUP
+  Vish     primary      —           —
+  Priya    additional   18442       30741
+  Rohan    additional   20917       30741`}
       />
       <P>
         Members with a <Code>--splitwise-id</Code> are picked up automatically
