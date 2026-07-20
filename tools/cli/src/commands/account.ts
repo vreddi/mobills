@@ -1,5 +1,6 @@
 import { api, type Id } from '@mobills/convex';
 import { Command } from 'commander';
+import { resolveAccountId } from '../lib/accountPicker.js';
 import { getConvexClient } from '../lib/convex.js';
 
 export function registerAccountCommands(program: Command): void {
@@ -26,7 +27,10 @@ export function registerAccountCommands(program: Command): void {
   account
     .command('edit')
     .description('Edit an existing T-Mobile tracking account')
-    .requiredOption('--account <accountId>', 'Account id to edit')
+    .option(
+      '--account <accountId>',
+      'Account id to edit (prompts a picker when omitted)',
+    )
     .option('--name <name>', 'New display name for the account')
     .option('--account-number <number>', 'New T-Mobile account number')
     .option('--plan <plan>', 'New plan name')
@@ -34,7 +38,7 @@ export function registerAccountCommands(program: Command): void {
     .option('--clear-plan', 'Remove the plan name')
     .action(
       async (opts: {
-        account: string;
+        account?: string;
         name?: string;
         accountNumber?: string;
         plan?: string;
@@ -50,35 +54,36 @@ export function registerAccountCommands(program: Command): void {
           throw new Error('Use either --plan or --clear-plan, not both');
         }
 
-        const args: {
-          accountId: Id<'accounts'>;
+        const updates: {
           name?: string;
           tmobileAccountNumber?: string | null;
           planName?: string | null;
-        } = {
-          accountId: opts.account as Id<'accounts'>,
-        };
+        } = {};
 
         if (opts.name !== undefined) {
-          args.name = opts.name;
+          updates.name = opts.name;
         }
         if (opts.clearAccountNumber) {
-          args.tmobileAccountNumber = null;
+          updates.tmobileAccountNumber = null;
         } else if (opts.accountNumber !== undefined) {
-          args.tmobileAccountNumber = opts.accountNumber;
+          updates.tmobileAccountNumber = opts.accountNumber;
         }
         if (opts.clearPlan) {
-          args.planName = null;
+          updates.planName = null;
         } else if (opts.plan !== undefined) {
-          args.planName = opts.plan;
+          updates.planName = opts.plan;
         }
 
-        if (Object.keys(args).length === 1) {
+        if (Object.keys(updates).length === 0) {
           throw new Error('No fields provided to update');
         }
 
         const client = getConvexClient();
-        const id = await client.mutation(api.accounts.updateAccount, args);
+        const accountId = await resolveAccountId(client, opts.account);
+        const id = await client.mutation(api.accounts.updateAccount, {
+          accountId,
+          ...updates,
+        });
         console.log(`Updated account: ${id}`);
       },
     );
