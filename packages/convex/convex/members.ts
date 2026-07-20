@@ -27,6 +27,7 @@ export const addMember = mutation({
       v.union(v.literal('primary'), v.literal('additional')),
     ),
     splitwiseUserId: v.optional(v.string()),
+    splitwiseGroupId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -43,8 +44,73 @@ export const addMember = mutation({
       phoneNumber: args.phoneNumber,
       lineType: args.lineType,
       splitwiseUserId: args.splitwiseUserId,
+      splitwiseGroupId: args.splitwiseGroupId,
       createdAt: Date.now(),
     });
+  },
+});
+
+export const updateMember = mutation({
+  args: {
+    memberId: v.id('members'),
+    name: v.optional(v.string()),
+    email: v.optional(v.union(v.string(), v.null())),
+    phoneNumber: v.optional(v.union(v.string(), v.null())),
+    lineType: v.optional(
+      v.union(v.literal('primary'), v.literal('additional'), v.null()),
+    ),
+    splitwiseUserId: v.optional(v.union(v.string(), v.null())),
+    splitwiseGroupId: v.optional(v.union(v.string(), v.null())),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity === null) {
+      throw new Error('Not authenticated');
+    }
+
+    const member = await ctx.db.get(args.memberId);
+    if (member === null) {
+      throw new Error('Member not found');
+    }
+    await requireOwnedAccount(ctx, member.accountId, identity.subject);
+
+    const patch: {
+      name?: string;
+      email?: string | undefined;
+      phoneNumber?: string | undefined;
+      lineType?: 'primary' | 'additional' | undefined;
+      splitwiseUserId?: string | undefined;
+      splitwiseGroupId?: string | undefined;
+    } = {};
+
+    if (args.name !== undefined) {
+      if (args.name.trim() === '') {
+        throw new Error('name cannot be empty');
+      }
+      patch.name = args.name;
+    }
+    if (args.email !== undefined) {
+      patch.email = args.email ?? undefined;
+    }
+    if (args.phoneNumber !== undefined) {
+      patch.phoneNumber = args.phoneNumber ?? undefined;
+    }
+    if (args.lineType !== undefined) {
+      patch.lineType = args.lineType ?? undefined;
+    }
+    if (args.splitwiseUserId !== undefined) {
+      patch.splitwiseUserId = args.splitwiseUserId ?? undefined;
+    }
+    if (args.splitwiseGroupId !== undefined) {
+      patch.splitwiseGroupId = args.splitwiseGroupId ?? undefined;
+    }
+
+    if (Object.keys(patch).length === 0) {
+      throw new Error('No fields provided to update');
+    }
+
+    await ctx.db.patch(args.memberId, patch);
+    return args.memberId;
   },
 });
 
