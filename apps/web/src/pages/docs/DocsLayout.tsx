@@ -50,8 +50,18 @@ const SECTIONS: DocSection[] = [
       {
         to: '/docs/integrations/splitwise',
         label: 'Splitwise',
-        keywords: 'expense sync friends split',
+        keywords: 'expense sync friends split group',
         icon: splitwiseLogo,
+      },
+    ],
+  },
+  {
+    title: 'Automation',
+    links: [
+      {
+        to: '/docs/skills',
+        label: 'Agent skills',
+        keywords: 'skill claude agent import tmobile lines link splitwise automate',
       },
     ],
   },

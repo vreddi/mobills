@@ -40,6 +40,18 @@ export function DocsTMobile() {
         that T-Mobile plan.
       </P>
       <Callout>
+        Adding every line by hand gets old — the{' '}
+        <Code>import-tmobile-lines</Code>{' '}
+        <a
+          href="/docs/skills"
+          className="text-primary underline-offset-4 hover:underline"
+        >
+          agent skill
+        </a>{' '}
+        reads the lines from your logged-in t-mobile.com session or a bill PDF
+        and adds them for you.
+      </Callout>
+      <Callout>
         More providers are on the roadmap. Split a bill from another carrier?
         Suggest it on{' '}
         <a

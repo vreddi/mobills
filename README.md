@@ -138,6 +138,12 @@ an agent (e.g. Claude Code) read the lines from your logged-in t-mobile.com
 session or a downloaded bill PDF, then run `mobills member add` for each one —
 your T-Mobile credentials are never shared with the agent or the CLI.
 
+Similarly, the
+[link-splitwise-members](./.claude/skills/link-splitwise-members/SKILL.md) skill
+matches each member to their Splitwise user id (and, for groups that settle
+together, a shared Splitwise group id) and applies the mapping with
+`mobills member edit`.
+
 ### Signing in
 
 The CLI authenticates to Convex as a Clerk user. The easiest way is a browser
