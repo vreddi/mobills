@@ -34,7 +34,7 @@ export function DocsAccountCommands() {
   fam_plan_01   Family Plan   Magenta MAX`}
       />
       <PagerNav
-        prev={{ to: '/docs/authentication', label: 'Authentication' }}
+        prev={{ to: '/docs/providers/tmobile', label: 'T-Mobile' }}
         next={{ to: '/docs/commands/member', label: 'mobills member' }}
       />
     </DocsPage>

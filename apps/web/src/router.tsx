@@ -9,6 +9,7 @@ import { DocsLayout } from '@/pages/docs/DocsLayout';
 import { DocsIntroduction } from '@/pages/docs/Introduction';
 import { DocsInstallation } from '@/pages/docs/Installation';
 import { DocsAuthentication } from '@/pages/docs/Authentication';
+import { DocsTMobile } from '@/pages/docs/TMobile';
 import { DocsAccountCommands } from '@/pages/docs/AccountCommands';
 import { DocsMemberCommands } from '@/pages/docs/MemberCommands';
 import { DocsSplitwise } from '@/pages/docs/Splitwise';
@@ -49,6 +50,12 @@ const docsAuthenticationRoute = createRoute({
   component: DocsAuthentication,
 });
 
+const docsTMobileRoute = createRoute({
+  getParentRoute: () => docsRoute,
+  path: 'providers/tmobile',
+  component: DocsTMobile,
+});
+
 const docsAccountRoute = createRoute({
   getParentRoute: () => docsRoute,
   path: 'commands/account',
@@ -73,6 +80,7 @@ const routeTree = rootRoute.addChildren([
     docsIndexRoute,
     docsInstallationRoute,
     docsAuthenticationRoute,
+    docsTMobileRoute,
     docsAccountRoute,
     docsMemberRoute,
     docsSplitwiseRoute,

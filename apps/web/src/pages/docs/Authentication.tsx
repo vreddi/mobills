@@ -39,7 +39,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6...`}
       </Callout>
       <PagerNav
         prev={{ to: '/docs/installation', label: 'Installation' }}
-        next={{ to: '/docs/commands/account', label: 'mobills account' }}
+        next={{ to: '/docs/providers/tmobile', label: 'T-Mobile' }}
       />
     </DocsPage>
   );
