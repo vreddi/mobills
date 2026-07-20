@@ -12,7 +12,8 @@ export function DocsSplitwise() {
       <P>
         Once your members are linked to their Splitwise accounts, mobills can
         turn a bill cycle into individual Splitwise expenses: each person's
-        monthly share, charged from you to them, itemized against the plan.
+        share of that cycle's bill, charged from you to them, itemized against
+        the plan.
         Your group settles up in Splitwise the way they already do for rent and
         dinners.
       </P>
@@ -24,8 +25,8 @@ export function DocsSplitwise() {
       <CodeBlock
         label="Terminal"
         code={`$ mobills member add --account fam_plan_01 --name "Priya" \\
-    --monthly-share 35 --splitwise-id 18442
-✓ Added Priya · additional line · $35.00/mo · splitwise:18442`}
+    --line-type additional --splitwise-id 18442
+✓ Added Priya · additional line · splitwise:18442`}
       />
       <P>
         Members without a <Code>--splitwise-id</Code> are simply skipped by the
@@ -35,9 +36,9 @@ export function DocsSplitwise() {
       <CodeBlock
         label="Terminal"
         code={`$ mobills member list --account fam_plan_01
-  NAME     LINE         SHARE      SPLITWISE
-  Vish     primary      $45.00     —
-  Priya    additional   $35.00     18442`}
+  NAME     LINE         SPLITWISE
+  Vish     primary      —
+  Priya    additional   18442`}
       />
       <Callout>
         More integrations are on the roadmap. Have a service your group settles

@@ -13,17 +13,6 @@ function parseLineType(value?: string): 'primary' | 'additional' | undefined {
   return value;
 }
 
-function parseMonthlyShare(value?: string): number | undefined {
-  if (value === undefined) {
-    return undefined;
-  }
-  const parsed = Number(value);
-  if (Number.isNaN(parsed)) {
-    throw new Error('--monthly-share must be a number');
-  }
-  return parsed;
-}
-
 export function registerMemberCommands(program: Command): void {
   const member = program
     .command('member')
@@ -40,7 +29,6 @@ export function registerMemberCommands(program: Command): void {
     .option('--email <email>', 'Member email')
     .option('--phone <phone>', 'Member phone number')
     .option('--line-type <type>', "Line type: 'primary' or 'additional'")
-    .option('--monthly-share <amount>', 'Monthly share amount (number)')
     .option('--splitwise-id <id>', 'Splitwise user id')
     .action(
       async (opts: {
@@ -49,7 +37,6 @@ export function registerMemberCommands(program: Command): void {
         email?: string;
         phone?: string;
         lineType?: string;
-        monthlyShare?: string;
         splitwiseId?: string;
       }) => {
         const client = getConvexClient();
@@ -60,7 +47,6 @@ export function registerMemberCommands(program: Command): void {
           email: opts.email,
           phoneNumber: opts.phone,
           lineType: parseLineType(opts.lineType),
-          monthlyShare: parseMonthlyShare(opts.monthlyShare),
           splitwiseUserId: opts.splitwiseId,
         });
         console.log(`Added member: ${id}`);
@@ -91,7 +77,6 @@ export function registerMemberCommands(program: Command): void {
           email: m.email ?? '',
           phone: m.phoneNumber ?? '',
           lineType: m.lineType ?? '',
-          monthlyShare: m.monthlyShare ?? '',
           splitwiseId: m.splitwiseUserId ?? '',
         })),
       );

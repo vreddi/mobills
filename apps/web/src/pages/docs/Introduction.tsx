@@ -19,15 +19,14 @@ export function DocsIntroduction() {
         Everything hangs off two concepts. An <Code>account</Code> represents a
         mobile plan you track — its name, carrier account number and plan. A{' '}
         <Code>member</Code> is a line on that account — a person with a line
-        type, a monthly share, and optionally a Splitwise id used to automate
-        settling up.
+        type and optionally a Splitwise id used to automate settling up.
       </P>
       <CodeBlock
         label="Terminal"
         code={`$ mobills account create --name "Family Plan" --plan "Magenta MAX"
 ✓ Created account fam_plan_01
 
-$ mobills member add --account fam_plan_01 --name "Priya" --monthly-share 35
+$ mobills member add --account fam_plan_01 --name "Priya" --line-type additional
 ✓ Added Priya`}
       />
       <H2>What you'll need</H2>
