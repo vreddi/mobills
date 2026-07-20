@@ -18,8 +18,8 @@ export default defineSchema({
     lineType: v.optional(
       v.union(v.literal('primary'), v.literal('additional')),
     ),
-    monthlyShare: v.optional(v.number()),
     splitwiseUserId: v.optional(v.string()),
+    splitwiseGroupId: v.optional(v.string()),
     createdAt: v.number(),
   }).index('by_account', ['accountId']),
 });

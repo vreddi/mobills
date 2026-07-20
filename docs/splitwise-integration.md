@@ -134,9 +134,17 @@ pnpm --filter @mobills/integration-splitwise demo -- create-expense \
 Each `-p / --participant` is `userId-or-email[:value]`, where `value` is a percent
 (`percentage` split) or an amount (`exact` split), and is ignored for `equal`.
 
+## Resolving members to Splitwise ids
+
+Members carry an optional `splitwiseUserId` and, for groups that settle
+together inside one Splitwise group, an optional `splitwiseGroupId` (leave it
+unset to settle individually as 1:1 friend expenses). Set them by hand with
+`mobills member add` / `mobills member edit`, or let the
+[link-splitwise-members](../.claude/skills/link-splitwise-members/SKILL.md)
+agent skill find the right group, match members by email/name, and apply the
+mapping for you.
+
 ## Not done yet
 
 - Wiring these capabilities into the `mobills` CLI command tree.
-- Resolving mobills members to Splitwise user ids automatically (members already
-  carry an optional `splitwiseUserId` in the Convex schema).
 - OAuth-based authentication.

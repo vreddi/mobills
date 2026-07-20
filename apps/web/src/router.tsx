@@ -13,6 +13,7 @@ import { DocsTMobile } from '@/pages/docs/TMobile';
 import { DocsAccountCommands } from '@/pages/docs/AccountCommands';
 import { DocsMemberCommands } from '@/pages/docs/MemberCommands';
 import { DocsSplitwise } from '@/pages/docs/Splitwise';
+import { DocsSkills } from '@/pages/docs/Skills';
 import { NotFound } from '@/pages/NotFound';
 
 const rootRoute = createRootRoute({
@@ -74,6 +75,12 @@ const docsSplitwiseRoute = createRoute({
   component: DocsSplitwise,
 });
 
+const docsSkillsRoute = createRoute({
+  getParentRoute: () => docsRoute,
+  path: 'skills',
+  component: DocsSkills,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   docsRoute.addChildren([
@@ -84,6 +91,7 @@ const routeTree = rootRoute.addChildren([
     docsAccountRoute,
     docsMemberRoute,
     docsSplitwiseRoute,
+    docsSkillsRoute,
   ]),
 ]);
 
