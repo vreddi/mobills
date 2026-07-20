@@ -131,6 +131,13 @@ Prefer running the CLI as a plain `mobills` command? See
 your `PATH` (`pnpm cli:link`), then unlink it (`pnpm cli:unlink`) to fall back to
 the published package.
 
+Rather than adding each line by hand, an agent skill can import them for you.
+T-Mobile has no public consumer API, so the
+[import-tmobile-lines](./.claude/skills/import-tmobile-lines/SKILL.md) skill has
+an agent (e.g. Claude Code) read the lines from your logged-in t-mobile.com
+session or a downloaded bill PDF, then run `mobills member add` for each one —
+your T-Mobile credentials are never shared with the agent or the CLI.
+
 ### Signing in
 
 The CLI authenticates to Convex as a Clerk user. The easiest way is a browser
