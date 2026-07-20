@@ -15,8 +15,8 @@ from one of two sources:
 - **Source A — logged-in browser session**: read the lines list from
   t-mobile.com in a browser where the user is already signed in.
 - **Source B — bill PDF**: parse a bill the user downloads from t-mobile.com.
-  Prefer this when available — the bill lists every line with its per-line
-  charges, so it can also populate `--monthly-share`.
+  Useful when the user already has a bill handy or would rather not drive a
+  browser.
 
 Ask the user which source they want if both are plausible.
 
@@ -67,8 +67,7 @@ Ask the user which source they want if both are plausible.
 
 - Ask the user to download a recent bill (t-mobile.com → Bill → Download PDF)
   and provide the file path.
-- Parse the per-line summary table: line name, phone number, and that line's
-  total charge for the month. Use the line total as `--monthly-share`.
+- Parse the per-line summary table for each line's name and phone number.
 
 ## 4. Normalize and confirm
 
@@ -76,7 +75,7 @@ Ask the user which source they want if both are plausible.
 - Map line type: the account holder's line → `primary`, all others →
   `additional` (the CLI only accepts these two values).
 - Present the user a table before mutating anything:
-  - lines to be added (name, phone, line type, monthly share if known)
+  - lines to be added (name, phone, line type)
   - lines skipped as duplicates of existing members
 - Let the user correct names, drop lines, or attach emails / Splitwise ids.
   Do not add members without this confirmation — scrapes and PDF parses can
@@ -91,7 +90,6 @@ mobills member add --account <accountId> \
   --name "<name>" \
   --phone "<+1XXXXXXXXXX>" \
   --line-type <primary|additional> \
-  [--monthly-share <amount>] \
   [--email <email>] \
   [--splitwise-id <id>]
 ```

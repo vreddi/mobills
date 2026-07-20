@@ -26,7 +26,6 @@ export const addMember = mutation({
     lineType: v.optional(
       v.union(v.literal('primary'), v.literal('additional')),
     ),
-    monthlyShare: v.optional(v.number()),
     splitwiseUserId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -43,7 +42,6 @@ export const addMember = mutation({
       email: args.email,
       phoneNumber: args.phoneNumber,
       lineType: args.lineType,
-      monthlyShare: args.monthlyShare,
       splitwiseUserId: args.splitwiseUserId,
       createdAt: Date.now(),
     });

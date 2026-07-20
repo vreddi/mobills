@@ -6,7 +6,7 @@ export function DocsMemberCommands() {
     <DocsPage
       eyebrow="CLI reference"
       title="mobills member"
-      lede="Manage the people on an account. Each member is a line on the plan with a monthly share — and optionally a Splitwise id for automated settling."
+      lede="Manage the people on an account. Each member is a line on the plan — optionally with a Splitwise id for automated settling."
     >
       <H2>member add</H2>
       <P>Add a member (a line) to an account.</P>
@@ -14,8 +14,8 @@ export function DocsMemberCommands() {
         label="Terminal"
         code={`$ mobills member add --account fam_plan_01 --name "Priya" \\
     --email priya@example.com --line-type additional \\
-    --monthly-share 35 --splitwise-id 18442
-✓ Added Priya · additional line · $35.00/mo · splitwise:18442`}
+    --splitwise-id 18442
+✓ Added Priya · additional line · splitwise:18442`}
       />
       <OptionsTable
         rows={[
@@ -24,19 +24,18 @@ export function DocsMemberCommands() {
           { flag: '--email <email>', description: 'Member email.' },
           { flag: '--phone <phone>', description: 'Member phone number.' },
           { flag: '--line-type <type>', description: "Line type: 'primary' or 'additional'." },
-          { flag: '--monthly-share <amount>', description: 'Monthly share amount, in dollars.' },
           { flag: '--splitwise-id <id>', description: 'Splitwise user id used by the Splitwise integration.' },
         ]}
       />
       <H2>member list</H2>
-      <P>List every member on an account, with line type and share.</P>
+      <P>List every member on an account, with line type.</P>
       <CodeBlock
         label="Terminal"
         code={`$ mobills member list --account fam_plan_01
-  NAME     LINE         SHARE      SPLITWISE
-  Vish     primary      $45.00     —
-  Priya    additional   $35.00     18442
-  Rohan    additional   $35.00     20917`}
+  NAME     LINE         SPLITWISE
+  Vish     primary      —
+  Priya    additional   18442
+  Rohan    additional   20917`}
       />
       <P>
         Members with a <Code>--splitwise-id</Code> are picked up automatically

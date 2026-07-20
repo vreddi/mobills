@@ -96,15 +96,15 @@ function TerminalDemo() {
             mobills member add --account fam_plan_01 --name "Priya" \
           </Cmd>
           <Out>
-            {'    '}--line-type additional --monthly-share 35 --splitwise-id 18442
+            {'    '}--line-type additional --splitwise-id 18442
           </Out>
-          <Ok>Added Priya · additional line · $35.00/mo · splitwise:18442</Ok>
+          <Ok>Added Priya · additional line · splitwise:18442</Ok>
           <Blank />
           <Cmd>mobills member list --account fam_plan_01</Cmd>
-          <Out>{'  NAME     LINE         SHARE      SPLITWISE'}</Out>
-          <Out>{'  Vish     primary      $45.00     —'}</Out>
-          <Out>{'  Priya    additional   $35.00     18442'}</Out>
-          <Out>{'  Rohan    additional   $35.00     20917'}</Out>
+          <Out>{'  NAME     LINE         SPLITWISE'}</Out>
+          <Out>{'  Vish     primary      —'}</Out>
+          <Out>{'  Priya    additional   18442'}</Out>
+          <Out>{'  Rohan    additional   20917'}</Out>
         </Terminal>
       </ScrollReveal>
     </section>
@@ -141,7 +141,7 @@ const FEATURES = [
   {
     icon: Receipt,
     title: 'Model the whole bill',
-    body: 'Accounts, plans and per-line monthly shares live in one place — the source of truth for who owes what each cycle.',
+    body: 'Accounts, plans and every line live in one place — the source of truth for who is on the bill each cycle.',
   },
   {
     icon: Users,
