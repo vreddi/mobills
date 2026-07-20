@@ -1,5 +1,6 @@
 import { api, type Id } from '@mobills/convex';
 import { Command } from 'commander';
+import { resolveAccountId } from '../lib/accountPicker.js';
 import { getConvexClient } from '../lib/convex.js';
 
 function parseLineType(value?: string): 'primary' | 'additional' | undefined {
@@ -31,7 +32,10 @@ export function registerMemberCommands(program: Command): void {
   member
     .command('add')
     .description('Add a member to an account')
-    .requiredOption('--account <accountId>', 'Account id to add the member to')
+    .option(
+      '--account <accountId>',
+      'Account id to add the member to (prompts a picker when omitted)',
+    )
     .requiredOption('--name <name>', 'Member name')
     .option('--email <email>', 'Member email')
     .option('--phone <phone>', 'Member phone number')
@@ -40,7 +44,7 @@ export function registerMemberCommands(program: Command): void {
     .option('--splitwise-id <id>', 'Splitwise user id')
     .action(
       async (opts: {
-        account: string;
+        account?: string;
         name: string;
         email?: string;
         phone?: string;
@@ -49,8 +53,9 @@ export function registerMemberCommands(program: Command): void {
         splitwiseId?: string;
       }) => {
         const client = getConvexClient();
+        const accountId = await resolveAccountId(client, opts.account);
         const id = await client.mutation(api.members.addMember, {
-          accountId: opts.account as Id<'accounts'>,
+          accountId,
           name: opts.name,
           email: opts.email,
           phoneNumber: opts.phone,
@@ -65,11 +70,15 @@ export function registerMemberCommands(program: Command): void {
   member
     .command('list')
     .description('List members on an account')
-    .requiredOption('--account <accountId>', 'Account id to list members for')
-    .action(async (opts: { account: string }) => {
+    .option(
+      '--account <accountId>',
+      'Account id to list members for (prompts a picker when omitted)',
+    )
+    .action(async (opts: { account?: string }) => {
       const client = getConvexClient();
+      const accountId = await resolveAccountId(client, opts.account);
       const members = await client.query(api.members.listMembers, {
-        accountId: opts.account as Id<'accounts'>,
+        accountId,
       });
       if (members.length === 0) {
         console.log('No members found.');
