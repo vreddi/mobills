@@ -19,6 +19,7 @@ export default defineSchema({
       v.union(v.literal('primary'), v.literal('additional')),
     ),
     splitwiseUserId: v.optional(v.string()),
+    splitwiseGroupId: v.optional(v.string()),
     createdAt: v.number(),
   }).index('by_account', ['accountId']),
 });
