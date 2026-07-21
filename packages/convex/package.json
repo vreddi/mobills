@@ -17,6 +17,7 @@
     "build": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
+    "@mobills/integration-splitwise": "workspace:*",
     "convex": "^1.17.0"
   },
   "devDependencies": {
