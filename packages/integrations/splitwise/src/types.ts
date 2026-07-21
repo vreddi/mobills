@@ -113,3 +113,29 @@ export interface SplitwiseUser {
   email: string;
   [key: string]: unknown;
 }
+
+/** A member of a Splitwise group (a subset of the full user object). */
+export interface SplitwiseGroupMember {
+  id: number;
+  first_name: string;
+  last_name: string | null;
+  email: string | null;
+  [key: string]: unknown;
+}
+
+/** Minimal shape of a Splitwise group returned by `get_groups`. */
+export interface SplitwiseGroup {
+  id: number;
+  name: string;
+  members: SplitwiseGroupMember[];
+  [key: string]: unknown;
+}
+
+/** Minimal shape of a Splitwise friend returned by `get_friends`. */
+export interface SplitwiseFriend {
+  id: number;
+  first_name: string;
+  last_name: string | null;
+  email: string | null;
+  [key: string]: unknown;
+}

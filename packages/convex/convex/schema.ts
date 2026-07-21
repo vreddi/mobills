@@ -22,4 +22,19 @@ export default defineSchema({
     splitwiseGroupId: v.optional(v.string()),
     createdAt: v.number(),
   }).index('by_account', ['accountId']),
+
+  // Per-operator Splitwise credential, encrypted at rest. The plaintext API key
+  // is never stored — only the AES-256-GCM ciphertext plus the iv/authTag
+  // needed to decrypt it inside a Convex action.
+  splitwiseConnections: defineTable({
+    ownerClerkUserId: v.string(),
+    ciphertext: v.string(),
+    iv: v.string(),
+    authTag: v.string(),
+    baseUrl: v.optional(v.string()),
+    splitwiseUserId: v.number(),
+    connectedAs: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index('by_owner', ['ownerClerkUserId']),
 });

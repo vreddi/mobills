@@ -9,7 +9,10 @@
  */
 
 import type * as accounts from "../accounts.js";
+import type * as lib_secretbox from "../lib/secretbox.js";
 import type * as members from "../members.js";
+import type * as splitwise from "../splitwise.js";
+import type * as splitwiseStore from "../splitwiseStore.js";
 
 import type {
   ApiFromModules,
@@ -19,7 +22,10 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   accounts: typeof accounts;
+  "lib/secretbox": typeof lib_secretbox;
   members: typeof members;
+  splitwise: typeof splitwise;
+  splitwiseStore: typeof splitwiseStore;
 }>;
 
 /**

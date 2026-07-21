@@ -38,10 +38,21 @@ Copy `.env.example` to `.env` and fill in the values:
 | `CONVEX_DEPLOY_KEY`       | no       | Used by `convex deploy` in CI/non-interactive environments.                 |
 | `CLERK_SECRET_KEY`        | no       | Clerk secret key.                                                            |
 | `CLERK_JWT_ISSUER_DOMAIN` | no       | Clerk issuer / Frontend API URL; must match the `convex` JWT template.      |
-| `SPLITWISE_API_KEY`       | no\*     | Splitwise personal API key; required to use the Splitwise capabilities.      |
+| `SPLITWISE_API_KEY`       | no\*     | Only for the standalone `@mobills/integration-splitwise` demo runner. The CLI does **not** use it — connect Splitwise with `mobills integration splitwise setup`. |
 | `SPLITWISE_API_BASE_URL`  | no       | Override the Splitwise API base URL (defaults to the v3.0 endpoint).         |
 
-\* Required only when invoking the `@mobills/integration-splitwise` capabilities.
+\* `SPLITWISE_API_KEY` is only read by the standalone
+`@mobills/integration-splitwise` demo runner. For real use, connect Splitwise
+with `mobills integration splitwise setup`: the CLI sends the key to the mobills
+backend, which validates it and stores it **encrypted at rest** (AES-256-GCM),
+and every Splitwise call runs server-side. No Splitwise key is ever stored on
+the CLI user's machine.
+
+The backend needs a `MOBILLS_SECRET_ENCRYPTION_KEY` (a base64 or hex encoded
+256-bit key) set on the Convex deployment to encrypt stored credentials.
+Generate one with `openssl rand -base64 32` and set it (from `packages/convex`)
+with `pnpm dlx convex env set MOBILLS_SECRET_ENCRYPTION_KEY <key>` — or via the
+Convex dashboard.
 
 \* `CLERK_PUBLISHABLE_KEY` is required to sign in with `mobills login`. If you
 instead supply a `CLERK_SESSION_TOKEN` directly, it is not needed.
@@ -142,7 +153,10 @@ Similarly, the
 [link-splitwise-members](./.claude/skills/link-splitwise-members/SKILL.md) skill
 matches each member to their Splitwise user id (and, for groups that settle
 together, a shared Splitwise group id) and applies the mapping with
-`mobills member edit`.
+`mobills member edit`. Connect Splitwise once with
+`mobills integration splitwise setup` — the key is stored encrypted in the
+mobills backend and all Splitwise calls run server-side, so no key ever lives on
+your machine. The skill then reads your groups and friends through the CLI.
 
 ### Signing in
 
