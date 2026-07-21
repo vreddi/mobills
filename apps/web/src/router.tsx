@@ -12,6 +12,7 @@ import { DocsAuthentication } from '@/pages/docs/Authentication';
 import { DocsTMobile } from '@/pages/docs/TMobile';
 import { DocsAccountCommands } from '@/pages/docs/AccountCommands';
 import { DocsMemberCommands } from '@/pages/docs/MemberCommands';
+import { DocsBillCommands } from '@/pages/docs/BillCommands';
 import { DocsSplitwise } from '@/pages/docs/Splitwise';
 import { DocsSkills } from '@/pages/docs/Skills';
 import { NotFound } from '@/pages/NotFound';
@@ -69,6 +70,12 @@ const docsMemberRoute = createRoute({
   component: DocsMemberCommands,
 });
 
+const docsBillRoute = createRoute({
+  getParentRoute: () => docsRoute,
+  path: 'commands/bill',
+  component: DocsBillCommands,
+});
+
 const docsSplitwiseRoute = createRoute({
   getParentRoute: () => docsRoute,
   path: 'integrations/splitwise',
@@ -90,6 +97,7 @@ const routeTree = rootRoute.addChildren([
     docsTMobileRoute,
     docsAccountRoute,
     docsMemberRoute,
+    docsBillRoute,
     docsSplitwiseRoute,
     docsSkillsRoute,
   ]),

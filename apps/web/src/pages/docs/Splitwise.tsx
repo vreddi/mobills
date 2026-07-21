@@ -83,7 +83,7 @@ $ mobills member edit --member mem_priya_01 --clear-splitwise-group-id
         .
       </Callout>
       <PagerNav
-        prev={{ to: '/docs/commands/member', label: 'mobills member' }}
+        prev={{ to: '/docs/commands/bill', label: 'mobills bill' }}
         next={{ to: '/docs/skills', label: 'Agent skills' }}
       />
     </DocsPage>

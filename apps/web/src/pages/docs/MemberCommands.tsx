@@ -68,7 +68,7 @@ export function DocsMemberCommands() {
       </P>
       <PagerNav
         prev={{ to: '/docs/commands/account', label: 'mobills account' }}
-        next={{ to: '/docs/integrations/splitwise', label: 'Splitwise integration' }}
+        next={{ to: '/docs/commands/bill', label: 'mobills bill' }}
       />
     </DocsPage>
   );
