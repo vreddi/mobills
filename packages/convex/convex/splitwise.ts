@@ -34,7 +34,7 @@ async function clientForOwner(
       'Splitwise is not connected. Run `mobills integration splitwise setup`.',
     );
   }
-  const apiKey = openSecret({
+  const apiKey = await openSecret({
     ciphertext: row.ciphertext,
     iv: row.iv,
     authTag: row.authTag,
@@ -74,7 +74,7 @@ export const connect = action({
     const user = await client.getCurrentUser();
     const connectedAs = `${user.first_name} ${user.last_name ?? ''}`.trim();
 
-    const sealed = sealSecret(apiKey);
+    const sealed = await sealSecret(apiKey);
     await ctx.runMutation(internal.splitwiseStore.upsertConnection, {
       ownerClerkUserId,
       ciphertext: sealed.ciphertext,
