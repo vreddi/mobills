@@ -21,8 +21,8 @@ describe('secretbox', () => {
     }
   });
 
-  it('round-trips a secret', () => {
-    const sealed = sealSecret('splitwise-api-key');
+  it('round-trips a secret', async () => {
+    const sealed = await sealSecret('splitwise-api-key');
     expect(sealed).toEqual(
       expect.objectContaining({
         ciphertext: expect.any(String),
@@ -30,63 +30,63 @@ describe('secretbox', () => {
         authTag: expect.any(String),
       }),
     );
-    expect(openSecret(sealed)).toBe('splitwise-api-key');
+    expect(await openSecret(sealed)).toBe('splitwise-api-key');
   });
 
-  it('never stores the plaintext in the sealed output', () => {
-    const sealed = sealSecret('super-secret-value');
+  it('never stores the plaintext in the sealed output', async () => {
+    const sealed = await sealSecret('super-secret-value');
     expect(sealed.ciphertext).not.toContain('super-secret-value');
     expect(Buffer.from(sealed.ciphertext, 'base64').toString('utf8')).not.toBe(
       'super-secret-value',
     );
   });
 
-  it('uses a fresh iv for each encryption', () => {
-    const a = sealSecret('same-input');
-    const b = sealSecret('same-input');
+  it('uses a fresh iv for each encryption', async () => {
+    const a = await sealSecret('same-input');
+    const b = await sealSecret('same-input');
     expect(a.iv).not.toBe(b.iv);
     expect(a.ciphertext).not.toBe(b.ciphertext);
   });
 
-  it('accepts a hex-encoded key', () => {
+  it('accepts a hex-encoded key', async () => {
     process.env.MOBILLS_SECRET_ENCRYPTION_KEY = HEX_KEY;
-    const sealed = sealSecret('k');
-    expect(openSecret(sealed)).toBe('k');
+    const sealed = await sealSecret('k');
+    expect(await openSecret(sealed)).toBe('k');
   });
 
-  it('rejects a tampered auth tag', () => {
-    const sealed = sealSecret('value');
+  it('rejects a tampered auth tag', async () => {
+    const sealed = await sealSecret('value');
     const tampered = { ...sealed, authTag: Buffer.alloc(16, 1).toString('base64') };
-    expect(() => openSecret(tampered)).toThrow();
+    await expect(openSecret(tampered)).rejects.toThrow();
   });
 
-  it('rejects tampered ciphertext', () => {
-    const sealed = sealSecret('value');
+  it('rejects tampered ciphertext', async () => {
+    const sealed = await sealSecret('value');
     const bytes = Buffer.from(sealed.ciphertext, 'base64');
     bytes[0] ^= 0xff;
-    expect(() =>
+    await expect(
       openSecret({ ...sealed, ciphertext: bytes.toString('base64') }),
-    ).toThrow();
+    ).rejects.toThrow();
   });
 
-  it('cannot be decrypted with a different key', () => {
-    const sealed = sealSecret('value');
+  it('cannot be decrypted with a different key', async () => {
+    const sealed = await sealSecret('value');
     process.env.MOBILLS_SECRET_ENCRYPTION_KEY = Buffer.alloc(32, 42).toString(
       'base64',
     );
-    expect(() => openSecret(sealed)).toThrow();
+    await expect(openSecret(sealed)).rejects.toThrow();
   });
 
-  it('throws a helpful error when the key is missing', () => {
+  it('throws a helpful error when the key is missing', async () => {
     delete process.env.MOBILLS_SECRET_ENCRYPTION_KEY;
-    expect(() => sealSecret('value')).toThrow(
+    await expect(sealSecret('value')).rejects.toThrow(
       /MOBILLS_SECRET_ENCRYPTION_KEY/,
     );
   });
 
-  it('throws when the key is not 32 bytes', () => {
+  it('throws when the key is not 32 bytes', async () => {
     process.env.MOBILLS_SECRET_ENCRYPTION_KEY =
       Buffer.alloc(16, 1).toString('base64');
-    expect(() => sealSecret('value')).toThrow(/32 bytes/);
+    await expect(sealSecret('value')).rejects.toThrow(/32 bytes/);
   });
 });
