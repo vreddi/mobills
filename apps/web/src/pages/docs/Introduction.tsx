@@ -16,10 +16,12 @@ export function DocsIntroduction() {
       </P>
       <H2>How it works</H2>
       <P>
-        Everything hangs off two concepts. An <Code>account</Code> represents a
-        mobile plan you track — its name, carrier account number and plan. A{' '}
+        Everything hangs off three concepts. An <Code>account</Code> represents
+        a mobile plan you track — its name, carrier account number and plan. A{' '}
         <Code>member</Code> is a line on that account — a person with a line
-        type and optionally a Splitwise id used to automate settling up.
+        type and optionally a Splitwise id used to automate settling up. A{' '}
+        <Code>bill</Code> divides one cycle's charges across those members and
+        can be posted to Splitwise.
       </P>
       <CodeBlock
         label="Terminal"
@@ -27,12 +29,15 @@ export function DocsIntroduction() {
 ✓ Created account fam_plan_01
 
 $ mobills member add --account fam_plan_01 --name "Priya" --line-type additional
-✓ Added Priya`}
+✓ Added Priya
+
+$ mobills bill create --account fam_plan_01 --label "Jul 2026 0" --base 260
+✓ Created bill "Jul 2026 0"`}
       />
       <H2>What you'll need</H2>
       <P>
-        Node.js 20+, pnpm, and access to the project's Convex deployment and
-        Clerk application. The next two pages cover installing the CLI and
+        Node.js 20+ and access to the project's Convex deployment and Clerk
+        application. The next two pages cover installing the CLI from npm and
         wiring up authentication.
       </P>
       <Callout>

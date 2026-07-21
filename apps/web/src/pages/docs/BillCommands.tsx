@@ -102,9 +102,10 @@ export function DocsBillCommands() {
       <H2>bill post</H2>
       <P>
         Post the bill to Splitwise as one shared expense — you are recorded as
-        the payer and everyone else owes their computed share. mobills posts to
-        the members' shared Splitwise group when they have one, or as a
-        friend-to-friend expense otherwise.
+        the payer and everyone else owes their computed share. The expense total
+        always equals the bill total, so you're reimbursed for exactly what
+        you're owed. mobills posts to the members' shared Splitwise group when
+        they have one, or as a friend-to-friend expense otherwise.
       </P>
       <CodeBlock
         label="Terminal"
