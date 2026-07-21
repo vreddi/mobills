@@ -33,9 +33,9 @@ pick one (ask if they haven't said):
   If it reports "not connected" (or the credential is rejected), stop and ask
   the user to connect it themselves with `mobills integration splitwise setup`
   — that command prompts securely for a Splitwise personal API key (created at
-  <https://secure.splitwise.com/apps>) and stores it in the CLI's own config
-  (`~/.config/mobills/integrations.json`, mode 0600). **Never ask for, print,
-  paste, or store the API key yourself — the CLI owns it.**
+  <https://secure.splitwise.com/apps>) and stores it in the OS keychain
+  (falling back to a `0600` config file). **Never ask for, print, paste, or
+  store the API key yourself — the CLI owns it.**
 - The mobills CLI must be signed in: `mobills whoami` (user runs
   `mobills login` themselves if not). Use `mobills` if on PATH, otherwise
   `pnpm --filter @mobills/cli start <command...>` from the repo root.

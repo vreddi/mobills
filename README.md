@@ -43,9 +43,10 @@ Copy `.env.example` to `.env` and fill in the values:
 
 \* Required only when invoking the `@mobills/integration-splitwise` capabilities.
 Preferred setup is `mobills integration splitwise setup`, which prompts for a
-personal API key and stores it in the CLI's own config
-(`~/.config/mobills/integrations.json`, mode `0600`) so it works from any
-directory; `SPLITWISE_API_KEY` is only used as a fallback.
+personal API key and stores it in your OS keychain (macOS Keychain, Windows
+Credential Manager, or Linux Secret Service), falling back to a `0600` config
+file (`~/.config/mobills/integrations.json`) when no keychain is available. It
+works from any directory; `SPLITWISE_API_KEY` is only used as a fallback.
 
 \* `CLERK_PUBLISHABLE_KEY` is required to sign in with `mobills login`. If you
 instead supply a `CLERK_SESSION_TOKEN` directly, it is not needed.

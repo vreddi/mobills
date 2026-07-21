@@ -9,8 +9,9 @@ import Table from 'cli-table3';
 import { Command } from 'commander';
 import ora from 'ora';
 import {
+  effectiveSecretStorage,
   integrationsPath,
-  readSplitwiseIntegration,
+  readSplitwiseMetadata,
   removeSplitwiseIntegration,
   saveSplitwiseIntegration,
 } from '../lib/integrations.js';
@@ -18,6 +19,12 @@ import { getSplitwiseClient } from '../lib/splitwise.js';
 
 function fullName(first: string, last: string | null): string {
   return `${first} ${last ?? ''}`.trim();
+}
+
+function describeStorage(storage: 'keychain' | 'file'): string {
+  return storage === 'keychain'
+    ? 'your OS keychain'
+    : `${integrationsPath()} (mode 0600)`;
 }
 
 export function registerIntegrationCommands(program: Command): void {
@@ -29,23 +36,25 @@ export function registerIntegrationCommands(program: Command): void {
     .command('list')
     .description('Show configured integrations and their connection status')
     .action(() => {
-      const splitwise = readSplitwiseIntegration();
+      const splitwise = readSplitwiseMetadata();
       const table = new Table({
-        head: ['Integration', 'Status', 'Connected as', 'Connected'],
+        head: ['Integration', 'Status', 'Connected as', 'Key storage'],
         style: { head: ['cyan'] },
       });
       table.push([
         'Splitwise',
         splitwise ? chalk.green('connected') : chalk.dim('not connected'),
         splitwise?.connectedAs ?? chalk.dim('—'),
-        splitwise?.connectedAt
-          ? new Date(splitwise.connectedAt).toLocaleString()
+        splitwise
+          ? effectiveSecretStorage(splitwise) === 'keychain'
+            ? 'OS keychain'
+            : 'config file (0600)'
           : chalk.dim('—'),
       ]);
       console.log(`\n${table.toString()}\n`);
       if (!splitwise) {
         console.log(
-          'Run `mobills integration setup splitwise` to connect Splitwise.',
+          'Run `mobills integration splitwise setup` to connect Splitwise.',
         );
       }
     });
@@ -63,7 +72,7 @@ export function registerIntegrationCommands(program: Command): void {
     )
     .option('--base-url <url>', 'Override the Splitwise API base URL')
     .action(async (opts: { apiKey?: string; baseUrl?: string }) => {
-      const existing = readSplitwiseIntegration();
+      const existing = readSplitwiseMetadata();
       if (existing) {
         console.log(
           chalk.yellow(
@@ -105,30 +114,39 @@ export function registerIntegrationCommands(program: Command): void {
         throw error;
       }
 
-      saveSplitwiseIntegration({
+      const storage = await saveSplitwiseIntegration({
         apiKey: trimmed,
         baseUrl: opts.baseUrl,
         userId,
         connectedAs,
         connectedAt: Date.now(),
       });
-      console.log(`Saved Splitwise integration to ${integrationsPath()}`);
+      console.log(`Stored Splitwise API key in ${describeStorage(storage)}.`);
+      if (storage === 'file') {
+        console.log(
+          chalk.dim(
+            'OS keychain unavailable — fell back to the config file. ' +
+              'Install a Secret Service (e.g. gnome-keyring) for encrypted storage.',
+          ),
+        );
+      }
     });
 
   splitwise
     .command('status')
     .description('Verify the stored Splitwise credential still works')
     .action(async () => {
-      const stored = readSplitwiseIntegration();
+      const stored = readSplitwiseMetadata();
       if (!stored) {
         console.log(
-          'Splitwise is not connected. Run `mobills integration setup splitwise`.',
+          'Splitwise is not connected. Run `mobills integration splitwise setup`.',
         );
         return;
       }
       const spinner = ora('Checking Splitwise connection').start();
       try {
-        const user = await getSplitwiseClient().getCurrentUser();
+        const client = await getSplitwiseClient();
+        const user = await client.getCurrentUser();
         spinner.succeed(
           `Connected as ${fullName(user.first_name, user.last_name)} ` +
             `(id ${user.id}, ${user.email})`,
@@ -137,7 +155,7 @@ export function registerIntegrationCommands(program: Command): void {
         spinner.fail('Splitwise credential is no longer valid');
         console.log(
           chalk.yellow(
-            'Re-run `mobills integration setup splitwise` to reconnect.',
+            'Re-run `mobills integration splitwise setup` to reconnect.',
           ),
         );
         throw error;
@@ -147,8 +165,8 @@ export function registerIntegrationCommands(program: Command): void {
   splitwise
     .command('remove')
     .description('Remove the stored Splitwise credential')
-    .action(() => {
-      const removed = removeSplitwiseIntegration();
+    .action(async () => {
+      const removed = await removeSplitwiseIntegration();
       console.log(
         removed
           ? 'Splitwise disconnected. Stored credential removed.'
@@ -161,7 +179,7 @@ export function registerIntegrationCommands(program: Command): void {
     .description('Show the connected Splitwise user')
     .option('--json', 'Output raw JSON')
     .action(async (opts: { json?: boolean }) => {
-      const user = await getSplitwiseClient().getCurrentUser();
+      const user = await (await getSplitwiseClient()).getCurrentUser();
       if (opts.json) {
         console.log(JSON.stringify(user, null, 2));
         return;
@@ -176,7 +194,9 @@ export function registerIntegrationCommands(program: Command): void {
     .description("List the connected user's Splitwise groups")
     .option('--json', 'Output raw JSON')
     .action(async (opts: { json?: boolean }) => {
-      const groups: SplitwiseGroup[] = await getSplitwiseClient().getGroups();
+      const groups: SplitwiseGroup[] = await (
+        await getSplitwiseClient()
+      ).getGroups();
       if (opts.json) {
         console.log(JSON.stringify(groups, null, 2));
         return;
@@ -204,7 +224,9 @@ export function registerIntegrationCommands(program: Command): void {
     .description("List the connected user's Splitwise friends")
     .option('--json', 'Output raw JSON')
     .action(async (opts: { json?: boolean }) => {
-      const friends: SplitwiseFriend[] = await getSplitwiseClient().getFriends();
+      const friends: SplitwiseFriend[] = await (
+        await getSplitwiseClient()
+      ).getFriends();
       if (opts.json) {
         console.log(JSON.stringify(friends, null, 2));
         return;

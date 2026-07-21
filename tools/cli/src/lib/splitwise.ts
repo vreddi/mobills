@@ -10,8 +10,8 @@ import { readSplitwiseIntegration } from './integrations.js';
  * existing `.env`-based setups keep working. Throws a helpful error when
  * Splitwise has not been connected yet.
  */
-export function getSplitwiseClient(): SplitwiseClient {
-  const stored = readSplitwiseIntegration();
+export async function getSplitwiseClient(): Promise<SplitwiseClient> {
+  const stored = await readSplitwiseIntegration();
   if (stored?.apiKey) {
     return new SplitwiseClient({
       apiKey: stored.apiKey,
