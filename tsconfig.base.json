@@ -14,6 +14,7 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
+      "@mobills/billing": ["packages/billing/src/index.ts"],
       "@mobills/convex": ["packages/convex/src/index.ts"],
       "@mobills/integration-splitwise": ["packages/integrations/splitwise/src/index.ts"]
     }
