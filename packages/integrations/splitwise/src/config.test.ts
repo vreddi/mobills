@@ -35,6 +35,15 @@ describe('normalizeSplitwiseBaseUrl', () => {
     ).toThrow();
   });
 
+  it('rejects host-spoofing URLs', () => {
+    for (const baseUrl of [
+      'https://secure.splitwise.com@evil.com/api/v3.0',
+      'https://secure.splitwise.com.evil.com/api/v3.0',
+    ]) {
+      expect(() => normalizeSplitwiseBaseUrl(baseUrl)).toThrow(/host/);
+    }
+  });
+
   it('rejects a malformed URL', () => {
     expect(() => normalizeSplitwiseBaseUrl('not a url')).toThrow(/valid URL/);
   });
