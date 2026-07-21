@@ -242,27 +242,44 @@ export const postBill = action({
           : 0;
     }
 
-    const apiKey = await openSecret({
-      ciphertext: connection.ciphertext,
-      iv: connection.iv,
-      authTag: connection.authTag,
-    });
-    const client = new SplitwiseClient({
-      apiKey,
-      ...(connection.baseUrl ? { baseUrl: connection.baseUrl } : {}),
+    await ctx.runMutation(internal.bills.beginSplitwisePosting, {
+      billId: args.billId,
+      ownerClerkUserId,
     });
 
-    const expense = await createSharedExpense(client, {
-      description: bill.label,
-      cost: bill.totalCents / 100,
-      currencyCode: bill.currencyCode,
-      groupId,
-      split: {
-        kind: 'exact',
-        payerUserId: connection.splitwiseUserId,
-        participants,
-      },
-    });
+    const expense = await (async () => {
+      try {
+        const apiKey = await openSecret({
+          ciphertext: connection.ciphertext,
+          iv: connection.iv,
+          authTag: connection.authTag,
+        });
+        const client = new SplitwiseClient({
+          apiKey,
+          ...(connection.baseUrl ? { baseUrl: connection.baseUrl } : {}),
+        });
+
+        return await createSharedExpense(client, {
+          description: bill.label,
+          cost: bill.totalCents / 100,
+          currencyCode: bill.currencyCode,
+          groupId,
+          split: {
+            kind: 'exact',
+            payerUserId: connection.splitwiseUserId,
+            participants,
+          },
+        });
+      } catch (error) {
+        await ctx
+          .runMutation(internal.bills.releaseSplitwisePosting, {
+            billId: args.billId,
+            ownerClerkUserId,
+          })
+          .catch(() => undefined);
+        throw error;
+      }
+    })();
 
     await ctx.runMutation(internal.bills.appendPosting, {
       billId: args.billId,

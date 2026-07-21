@@ -31,6 +31,8 @@ const memberChargeArg = v.object({
   extraCents: v.optional(v.number()),
 });
 
+const LOCK_TTL_MS = 2 * 60 * 1000;
+
 /**
  * Create a bill from the shared base pool plus each member's individual
  * charges. The server is authoritative: it re-derives the per-member breakdown
@@ -167,6 +169,54 @@ export const getBillForOwner = internalQuery({
   },
 });
 
+/** Internal: reserve a bill before posting it to Splitwise. */
+export const beginSplitwisePosting = internalMutation({
+  args: { billId: v.id('bills'), ownerClerkUserId: v.string() },
+  handler: async (ctx, args) => {
+    const bill = await ctx.db.get(args.billId);
+    if (bill === null) {
+      throw new Error('Bill not found');
+    }
+    if (bill.ownerClerkUserId !== args.ownerClerkUserId) {
+      throw new Error('Not authorized for this bill');
+    }
+    if (bill.postings.some((p) => p.integration === 'splitwise')) {
+      throw new Error('This bill has already been posted to splitwise.');
+    }
+
+    const now = Date.now();
+    if (
+      bill.splitwisePostingStartedAt !== undefined &&
+      now - bill.splitwisePostingStartedAt < LOCK_TTL_MS
+    ) {
+      throw new Error('A Splitwise post for this bill is already in progress.');
+    }
+
+    await ctx.db.patch(args.billId, { splitwisePostingStartedAt: now });
+    return args.billId;
+  },
+});
+
+/** Internal: release a Splitwise posting reservation after a failed post. */
+export const releaseSplitwisePosting = internalMutation({
+  args: { billId: v.id('bills'), ownerClerkUserId: v.string() },
+  handler: async (ctx, args) => {
+    const bill = await ctx.db.get(args.billId);
+    if (bill === null) {
+      throw new Error('Bill not found');
+    }
+    if (bill.ownerClerkUserId !== args.ownerClerkUserId) {
+      throw new Error('Not authorized for this bill');
+    }
+    if (bill.splitwisePostingStartedAt !== undefined) {
+      await ctx.db.patch(args.billId, {
+        splitwisePostingStartedAt: undefined,
+      });
+    }
+    return args.billId;
+  },
+});
+
 /** Internal: append a posting record after a bill is posted to an integration. */
 export const appendPosting = internalMutation({
   args: {
@@ -202,6 +252,7 @@ export const appendPosting = internalMutation({
           postedAt: Date.now(),
         },
       ],
+      splitwisePostingStartedAt: undefined,
     });
     return args.billId;
   },
