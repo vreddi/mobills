@@ -50,9 +50,9 @@ the CLI user's machine.
 
 The backend needs a `MOBILLS_SECRET_ENCRYPTION_KEY` (a base64 or hex encoded
 256-bit key) set on the Convex deployment to encrypt stored credentials.
-Generate one with `openssl rand -base64 32` and set it with
-`npx convex env set MOBILLS_SECRET_ENCRYPTION_KEY <key>` (or via the Convex
-dashboard).
+Generate one with `openssl rand -base64 32` and set it (from `packages/convex`)
+with `pnpm dlx convex env set MOBILLS_SECRET_ENCRYPTION_KEY <key>` — or via the
+Convex dashboard.
 
 \* `CLERK_PUBLISHABLE_KEY` is required to sign in with `mobills login`. If you
 instead supply a `CLERK_SESSION_TOKEN` directly, it is not needed.

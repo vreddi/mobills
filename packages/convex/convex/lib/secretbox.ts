@@ -3,9 +3,10 @@
  *
  * Runs only inside `"use node"` actions (it uses `node:crypto`). The master key
  * comes from the `MOBILLS_SECRET_ENCRYPTION_KEY` deployment environment
- * variable — set it with `npx convex env set MOBILLS_SECRET_ENCRYPTION_KEY <key>`
- * (or via the Convex dashboard). Accepts a 32-byte key encoded as base64 or as
- * 64 hex characters.
+ * variable — set it with
+ * `pnpm dlx convex env set MOBILLS_SECRET_ENCRYPTION_KEY <key>` (run from
+ * `packages/convex`, or via the Convex dashboard). Accepts a 32-byte key
+ * encoded as base64 or as 64 hex characters.
  */
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
 
@@ -25,7 +26,7 @@ function loadMasterKey(): Buffer {
     throw new Error(
       'MOBILLS_SECRET_ENCRYPTION_KEY is not set on the Convex deployment. ' +
         'Generate one with `openssl rand -base64 32` and set it with ' +
-        '`npx convex env set MOBILLS_SECRET_ENCRYPTION_KEY <key>`.',
+        '`pnpm dlx convex env set MOBILLS_SECRET_ENCRYPTION_KEY <key>`.',
     );
   }
 
