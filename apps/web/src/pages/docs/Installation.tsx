@@ -1,4 +1,5 @@
 import { CodeBlock } from '@/components/site/CodeBlock';
+import { InstallTabs } from '@/components/site/InstallTabs';
 import { Callout, Code, DocsPage, H2, P, PagerNav } from '@/pages/docs/primitives';
 
 export function DocsInstallation() {
@@ -22,14 +23,9 @@ export function DocsInstallation() {
         . Install it globally to get the <Code>mobills</Code> command on your{' '}
         <Code>PATH</Code>:
       </P>
-      <CodeBlock
-        label="Terminal"
-        code={`$ npm install -g @mobills/cli
-# or: pnpm add -g @mobills/cli
-
-$ mobills --version`}
-      />
+      <InstallTabs pkg="@mobills/cli" />
       <P>
+        Then verify it's on your <Code>PATH</Code> with <Code>mobills --version</Code>.
         Prefer not to install anything? Run the latest release on demand with{' '}
         <Code>npx</Code>:
       </P>
