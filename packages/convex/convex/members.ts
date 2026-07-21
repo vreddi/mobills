@@ -1,6 +1,11 @@
 import { v } from 'convex/values';
 import type { Id } from './_generated/dataModel';
-import { mutation, query, type QueryCtx } from './_generated/server';
+import {
+  internalQuery,
+  mutation,
+  query,
+  type QueryCtx,
+} from './_generated/server';
 
 async function requireOwnedAccount(
   ctx: QueryCtx,
@@ -126,6 +131,21 @@ export const listMembers = query({
 
     await requireOwnedAccount(ctx, args.accountId, identity.subject);
 
+    return await ctx.db
+      .query('members')
+      .withIndex('by_account', (q) => q.eq('accountId', args.accountId))
+      .collect();
+  },
+});
+
+/**
+ * Internal: list the members of an account without an auth check. Used by the
+ * Splitwise posting action (which has already authenticated and authorized the
+ * operator) to resolve each line item's Splitwise identity.
+ */
+export const listByAccountInternal = internalQuery({
+  args: { accountId: v.id('accounts') },
+  handler: async (ctx, args) => {
     return await ctx.db
       .query('members')
       .withIndex('by_account', (q) => q.eq('accountId', args.accountId))

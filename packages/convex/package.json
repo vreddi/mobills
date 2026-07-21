@@ -18,6 +18,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@mobills/billing": "workspace:*",
     "@mobills/integration-splitwise": "workspace:*",
     "convex": "^1.17.0"
   },
