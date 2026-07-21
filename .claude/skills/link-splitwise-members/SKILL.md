@@ -26,7 +26,7 @@ pick one (ask if they haven't said):
 
 - Splitwise must be connected to the mobills CLI. Verify:
 
-  ```
+  ```text
   mobills integration splitwise status
   ```
 
@@ -50,7 +50,7 @@ pick one (ask if they haven't said):
 
 - Fetch the user's groups through the CLI:
 
-  ```
+  ```text
   mobills integration splitwise groups --json
   ```
 
@@ -84,7 +84,7 @@ ambiguous match — ask.
 
 For each confirmed pair, run:
 
-```
+```text
 mobills member edit --member <memberId> --splitwise-id <splitwiseUserId>
 ```
 

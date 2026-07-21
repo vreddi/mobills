@@ -1,6 +1,9 @@
 'use node';
 
-import { SplitwiseClient } from '@mobills/integration-splitwise';
+import {
+  normalizeSplitwiseBaseUrl,
+  SplitwiseClient,
+} from '@mobills/integration-splitwise';
 import { v } from 'convex/values';
 import { internal } from './_generated/api';
 import { action, type ActionCtx } from './_generated/server';
@@ -56,9 +59,17 @@ export const connect = action({
       throw new Error('API key cannot be empty');
     }
 
+    // Validate the user-supplied base URL at this trust boundary: it is
+    // persisted and reused for later server-side requests carrying the
+    // decrypted key, so an unvalidated value is an SSRF risk.
+    const baseUrl =
+      args.baseUrl !== undefined
+        ? normalizeSplitwiseBaseUrl(args.baseUrl)
+        : undefined;
+
     const client = new SplitwiseClient({
       apiKey,
-      ...(args.baseUrl ? { baseUrl: args.baseUrl } : {}),
+      ...(baseUrl ? { baseUrl } : {}),
     });
     const user = await client.getCurrentUser();
     const connectedAs = `${user.first_name} ${user.last_name ?? ''}`.trim();
@@ -69,7 +80,7 @@ export const connect = action({
       ciphertext: sealed.ciphertext,
       iv: sealed.iv,
       authTag: sealed.authTag,
-      baseUrl: args.baseUrl,
+      baseUrl,
       splitwiseUserId: user.id,
       connectedAs,
     });

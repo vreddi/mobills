@@ -10,6 +10,25 @@ function fullName(first: string, last: string | null): string {
   return `${first} ${last ?? ''}`.trim();
 }
 
+// Fail fast on a bad --base-url before hitting the backend. The authoritative
+// check runs server-side in the Convex `connect` action; this mirrors it so the
+// user gets a clear local error and never sends an unusable value.
+function normalizeBaseUrl(input: string): string {
+  let url: URL;
+  try {
+    url = new URL(input);
+  } catch {
+    throw new Error('--base-url must be a valid URL');
+  }
+  if (url.protocol !== 'https:') {
+    throw new Error('--base-url must use https://');
+  }
+  if (url.hostname !== 'secure.splitwise.com') {
+    throw new Error('--base-url host must be secure.splitwise.com');
+  }
+  return url.toString().replace(/\/+$/, '');
+}
+
 export function registerIntegrationCommands(program: Command): void {
   const integration = program
     .command('integration')
@@ -64,6 +83,9 @@ export function registerIntegrationCommands(program: Command): void {
     .action(async (opts: { apiKey?: string; baseUrl?: string }) => {
       const client = getConvexClient();
 
+      const baseUrl =
+        opts.baseUrl !== undefined ? normalizeBaseUrl(opts.baseUrl) : undefined;
+
       const existing = await client.query(api.splitwiseStore.status, {});
       if (existing.connected) {
         console.log(
@@ -93,7 +115,7 @@ export function registerIntegrationCommands(program: Command): void {
       try {
         const result = await client.action(api.splitwise.connect, {
           apiKey: trimmed,
-          baseUrl: opts.baseUrl,
+          baseUrl,
         });
         spinner.succeed(
           `Connected as ${result.connectedAs} (id ${result.splitwiseUserId})`,

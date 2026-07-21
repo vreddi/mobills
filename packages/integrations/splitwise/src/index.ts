@@ -10,6 +10,8 @@ export type {
 export {
   configFromEnv,
   DEFAULT_SPLITWISE_BASE_URL,
+  SPLITWISE_API_HOST,
+  normalizeSplitwiseBaseUrl,
   type SplitwiseConfig,
 } from './config.js';
 
