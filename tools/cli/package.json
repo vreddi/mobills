@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@mobills/convex": "workspace:*",
+    "@mobills/integration-splitwise": "workspace:*",
     "@types/node": "^22.10.0",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",

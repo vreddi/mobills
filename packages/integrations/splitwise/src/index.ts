@@ -39,4 +39,7 @@ export type {
   SharedExpenseInput,
   SplitwiseExpense,
   SplitwiseUser,
+  SplitwiseGroup,
+  SplitwiseGroupMember,
+  SplitwiseFriend,
 } from './types.js';

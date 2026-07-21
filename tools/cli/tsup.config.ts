@@ -8,6 +8,6 @@ export default defineConfig({
   outDir: 'dist',
   clean: true,
   sourcemap: true,
-  // Bundle the workspace convex package (its entry is TypeScript source).
-  noExternal: [/@mobills\/convex/],
+  // Bundle the workspace packages whose entry points are TypeScript source.
+  noExternal: [/@mobills\/convex/, /@mobills\/integration-splitwise/],
 });

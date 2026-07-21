@@ -38,10 +38,14 @@ Copy `.env.example` to `.env` and fill in the values:
 | `CONVEX_DEPLOY_KEY`       | no       | Used by `convex deploy` in CI/non-interactive environments.                 |
 | `CLERK_SECRET_KEY`        | no       | Clerk secret key.                                                            |
 | `CLERK_JWT_ISSUER_DOMAIN` | no       | Clerk issuer / Frontend API URL; must match the `convex` JWT template.      |
-| `SPLITWISE_API_KEY`       | no\*     | Splitwise personal API key; required to use the Splitwise capabilities.      |
+| `SPLITWISE_API_KEY`       | no\*     | Legacy/fallback Splitwise personal API key. Prefer `mobills integration splitwise setup`. |
 | `SPLITWISE_API_BASE_URL`  | no       | Override the Splitwise API base URL (defaults to the v3.0 endpoint).         |
 
 \* Required only when invoking the `@mobills/integration-splitwise` capabilities.
+Preferred setup is `mobills integration splitwise setup`, which prompts for a
+personal API key and stores it in the CLI's own config
+(`~/.config/mobills/integrations.json`, mode `0600`) so it works from any
+directory; `SPLITWISE_API_KEY` is only used as a fallback.
 
 \* `CLERK_PUBLISHABLE_KEY` is required to sign in with `mobills login`. If you
 instead supply a `CLERK_SESSION_TOKEN` directly, it is not needed.
@@ -142,7 +146,9 @@ Similarly, the
 [link-splitwise-members](./.claude/skills/link-splitwise-members/SKILL.md) skill
 matches each member to their Splitwise user id (and, for groups that settle
 together, a shared Splitwise group id) and applies the mapping with
-`mobills member edit`.
+`mobills member edit`. Connect Splitwise once with
+`mobills integration splitwise setup` (the CLI stores the key for you); the
+skill then reads your groups and friends through the CLI.
 
 ### Signing in
 

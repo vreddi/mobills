@@ -132,6 +132,9 @@ importers:
       '@mobills/convex':
         specifier: workspace:*
         version: link:../../packages/convex
+      '@mobills/integration-splitwise':
+        specifier: workspace:*
+        version: link:../../packages/integrations/splitwise
       '@types/node':
         specifier: ^22.10.0
         version: 22.20.1

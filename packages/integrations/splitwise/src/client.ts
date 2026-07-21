@@ -11,6 +11,8 @@ import { DEFAULT_SPLITWISE_BASE_URL, type SplitwiseConfig } from './config.js';
 import type {
   ExpenseUserShare,
   SplitwiseExpense,
+  SplitwiseFriend,
+  SplitwiseGroup,
   SplitwiseUser,
 } from './types.js';
 
@@ -83,6 +85,24 @@ export class SplitwiseClient {
       'get_current_user',
     );
     return data.user;
+  }
+
+  /** Returns the groups the authenticated user belongs to. */
+  async getGroups(): Promise<SplitwiseGroup[]> {
+    const data = await this.request<{ groups: SplitwiseGroup[] }>(
+      'GET',
+      'get_groups',
+    );
+    return data.groups ?? [];
+  }
+
+  /** Returns the authenticated user's Splitwise friends. */
+  async getFriends(): Promise<SplitwiseFriend[]> {
+    const data = await this.request<{ friends: SplitwiseFriend[] }>(
+      'GET',
+      'get_friends',
+    );
+    return data.friends ?? [];
   }
 
   /**

@@ -2,6 +2,7 @@
 import { Command } from 'commander';
 import { registerAccountCommands } from './commands/account.js';
 import { registerAuthCommands } from './commands/auth.js';
+import { registerIntegrationCommands } from './commands/integration.js';
 import { registerMemberCommands } from './commands/member.js';
 
 const CLI_VERSION = '0.0.0';
@@ -26,6 +27,7 @@ program.on('option:v', () => {
 registerAuthCommands(program);
 registerAccountCommands(program);
 registerMemberCommands(program);
+registerIntegrationCommands(program);
 
 function describeError(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error);
