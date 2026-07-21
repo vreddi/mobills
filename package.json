@@ -12,6 +12,8 @@
     "cli:build": "pnpm --filter @mobills/cli build",
     "cli:link": "pnpm cli:build && node tools/cli/scripts/global-link.mjs link",
     "cli:unlink": "node tools/cli/scripts/global-link.mjs unlink",
+    "convex:dev": "pnpm --filter @mobills/convex run dev",
+    "convex:deploy": "pnpm --filter @mobills/convex run deploy",
     "nx": "nx",
     "plan": "nx release plan",
     "plan:check": "nx release plan:check",
