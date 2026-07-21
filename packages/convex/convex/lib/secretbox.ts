@@ -27,6 +27,42 @@ export interface SealedSecret {
   authTag: string;
 }
 
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = '';
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte);
+  }
+  return btoa(binary);
+}
+
+function base64ToBytes(base64: string): Uint8Array {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes;
+}
+
+function hexToBytes(hex: string): Uint8Array {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < bytes.length; i += 1) {
+    bytes[i] = Number.parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+  }
+  return bytes;
+}
+
+function concatBytes(...arrays: Uint8Array[]): Uint8Array {
+  const totalLength = arrays.reduce((sum, array) => sum + array.length, 0);
+  const combined = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const array of arrays) {
+    combined.set(array, offset);
+    offset += array.length;
+  }
+  return combined;
+}
+
 function loadMasterKeyBytes(): Uint8Array {
   const raw = process.env.MOBILLS_SECRET_ENCRYPTION_KEY;
   if (!raw || raw.length === 0) {
@@ -37,9 +73,15 @@ function loadMasterKeyBytes(): Uint8Array {
     );
   }
 
-  const key = /^[0-9a-fA-F]{64}$/.test(raw)
-    ? Buffer.from(raw, 'hex')
-    : Buffer.from(raw, 'base64');
+  let key: Uint8Array;
+  try {
+    key = /^[0-9a-fA-F]{64}$/.test(raw) ? hexToBytes(raw) : base64ToBytes(raw);
+  } catch {
+    throw new Error(
+      `MOBILLS_SECRET_ENCRYPTION_KEY must decode to ${KEY_BYTES} bytes ` +
+        '(a base64 or hex encoded 256-bit key).',
+    );
+  }
 
   if (key.length !== KEY_BYTES) {
     throw new Error(
@@ -76,20 +118,20 @@ export async function sealSecret(plaintext: string): Promise<SealedSecret> {
   const ciphertext = encrypted.slice(0, encrypted.length - AUTH_TAG_BYTES);
 
   return {
-    ciphertext: Buffer.from(ciphertext).toString('base64'),
-    iv: Buffer.from(iv).toString('base64'),
-    authTag: Buffer.from(authTag).toString('base64'),
+    ciphertext: bytesToBase64(ciphertext),
+    iv: bytesToBase64(iv),
+    authTag: bytesToBase64(authTag),
   };
 }
 
 /** Decrypts a sealed secret produced by {@link sealSecret}. */
 export async function openSecret(sealed: SealedSecret): Promise<string> {
   const key = await importMasterKey();
-  const iv = Buffer.from(sealed.iv, 'base64');
-  const data = Buffer.concat([
-    Buffer.from(sealed.ciphertext, 'base64'),
-    Buffer.from(sealed.authTag, 'base64'),
-  ]);
+  const iv = base64ToBytes(sealed.iv);
+  const data = concatBytes(
+    base64ToBytes(sealed.ciphertext),
+    base64ToBytes(sealed.authTag),
+  );
 
   const plaintext = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data);
   return textDecoder.decode(plaintext);
