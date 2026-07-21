@@ -54,3 +54,12 @@ describe('allocateByWeights', () => {
     expect(() => allocateByWeights(100, [-1, 2])).toThrow(/non-negative/);
   });
 });
+
+describe('safe integer cent inputs', () => {
+  it('rejects unsafe or fractional cents', () => {
+    expect(() => centsToString(1.5)).toThrow(/safe integer/);
+    expect(() => centsToString(-1.5)).toThrow(/safe integer/);
+    expect(() => allocateByWeights(1.5, [1, 1])).toThrow(/safe integer/);
+    expect(() => toCents(Number.MAX_VALUE)).toThrow(/safe integer/);
+  });
+});

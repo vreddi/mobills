@@ -12,20 +12,30 @@ export function toCents(amount: number): number {
   if (!Number.isFinite(amount)) {
     throw new Error(`Amount must be a finite number, got ${amount}`);
   }
-  return Math.round(amount * 100);
+  return requireSafeIntegerCents(Math.round(amount * 100), 'Amount');
+}
+
+function requireSafeIntegerCents(value: number, label: string): number {
+  if (!Number.isSafeInteger(value)) {
+    throw new Error(
+      `${label} must be a safe integer number of cents, got ${value}`,
+    );
+  }
+  return value;
 }
 
 /** Format integer cents as a fixed 2-decimal string (e.g. 1234 -> "12.34"). */
 export function centsToString(cents: number): string {
-  const sign = cents < 0 ? '-' : '';
-  const abs = Math.abs(cents);
+  const value = requireSafeIntegerCents(cents, 'cents');
+  const sign = value < 0 ? '-' : '';
+  const abs = Math.abs(value);
   const whole = Math.floor(abs / 100);
   const frac = abs % 100;
   return `${sign}${whole}.${frac.toString().padStart(2, '0')}`;
 }
 
 /**
- * Split `totalCents` across the given non-negative integer `weights` so the
+ * Split `totalCents` across the given non-negative `weights` so the
  * parts sum EXACTLY to `totalCents`. Uses the largest-remainder method: the
  * leftover cents go to the entries with the biggest fractional part, keeping the
  * shares as fair as possible.
@@ -34,6 +44,8 @@ export function allocateByWeights(
   totalCents: number,
   weights: number[],
 ): number[] {
+  const total = requireSafeIntegerCents(totalCents, 'totalCents');
+
   if (weights.length === 0) {
     throw new Error('Cannot allocate across zero participants');
   }
@@ -46,9 +58,9 @@ export function allocateByWeights(
     throw new Error('Sum of weights must be greater than zero');
   }
 
-  const exact = weights.map((w) => (totalCents * w) / weightTotal);
+  const exact = weights.map((w) => (total * w) / weightTotal);
   const floors = exact.map((value) => Math.floor(value));
-  let remainder = totalCents - floors.reduce((sum, value) => sum + value, 0);
+  let remainder = total - floors.reduce((sum, value) => sum + value, 0);
 
   const order = exact
     .map((value, index) => ({ index, frac: value - Math.floor(value) }))

@@ -87,14 +87,13 @@ describe('divideBill', () => {
     expect(sum).toBe(division.totalCents);
   });
 
-  it('bill value basis points sum to ~100%', () => {
+  it('bill value basis points sum to 100%', () => {
     const division = divideBill({
       basePoolCents: toCents(310),
       members: decJanMembers(),
     });
     const bps = division.members.reduce((s, m) => s + m.billValueBps, 0);
-    // Rounding can nudge the sum a few bps off an exact 10000.
-    expect(Math.abs(bps - 10000)).toBeLessThanOrEqual(9);
+    expect(bps).toBe(10000);
   });
 
   it('defaults currency to USD', () => {

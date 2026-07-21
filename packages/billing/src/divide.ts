@@ -91,8 +91,12 @@ export function divideBill(input: BillInput): BillDivision {
     throw new Error('A bill must total more than zero');
   }
 
-  for (const charge of charges) {
-    charge.billValueBps = Math.round((charge.totalCents * 10000) / totalCents);
+  const billValueBps = allocateByWeights(
+    10_000,
+    charges.map((c) => c.totalCents),
+  );
+  for (const [index, charge] of charges.entries()) {
+    charge.billValueBps = billValueBps[index];
   }
 
   return {
