@@ -62,7 +62,7 @@ const SECTIONS: DocSection[] = [
       {
         to: '/docs/skills',
         label: 'Agent skills',
-        keywords: 'skill claude agent import tmobile lines link splitwise automate',
+        keywords: 'skill claude agent import tmobile lines bill pdf statement link splitwise automate',
       },
     ],
   },
