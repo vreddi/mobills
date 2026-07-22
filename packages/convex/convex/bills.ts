@@ -272,3 +272,38 @@ export const appendPosting = internalMutation({
     return args.billId;
   },
 });
+
+/**
+ * Internal: remove an integration's posting record after the external expense
+ * has been deleted, reversing a posting. Throws when the bill was never posted
+ * to that integration so the caller never silently no-ops.
+ */
+export const removePosting = internalMutation({
+  args: {
+    billId: v.id('bills'),
+    ownerClerkUserId: v.string(),
+    integration: v.literal('splitwise'),
+  },
+  handler: async (ctx, args) => {
+    const bill = await ctx.db.get(args.billId);
+    if (bill === null) {
+      throw new Error('Bill not found');
+    }
+    if (bill.ownerClerkUserId !== args.ownerClerkUserId) {
+      throw new Error('Not authorized for this bill');
+    }
+    const remaining = bill.postings.filter(
+      (p) => p.integration !== args.integration,
+    );
+    if (remaining.length === bill.postings.length) {
+      throw new Error(
+        `This bill has not been posted to ${args.integration}.`,
+      );
+    }
+    await ctx.db.patch(args.billId, {
+      postings: remaining,
+      splitwisePostingLock: undefined,
+    });
+    return args.billId;
+  },
+});

@@ -150,6 +150,19 @@ function parseSplitwiseId(value: string | undefined, context: string): number {
   return id;
 }
 
+/** Parse a posting reference (one or more comma-separated expense ids). */
+function parseExpenseIds(reference: string): number[] {
+  const ids = reference
+    .split(',')
+    .map((part) => part.trim())
+    .filter((part) => part !== '')
+    .map((part) => parseSplitwiseId(part, 'Posting reference'));
+  if (ids.length === 0) {
+    throw new Error('Splitwise posting has no expense reference to reverse');
+  }
+  return ids;
+}
+
 /**
  * Post a previously-created bill to Splitwise as a single expense, with each
  * member owing their computed total. The operator (the connected Splitwise
@@ -300,6 +313,80 @@ export const postBill = action({
       cost: expense.cost,
       currencyCode: bill.currencyCode,
       memberCount: participants.length,
+    };
+  },
+});
+
+/**
+ * Reverse a bill's Splitwise posting: delete the underlying Splitwise
+ * expense(s) with the operator's stored credential, then drop the posting
+ * record so the bill can be posted again.
+ *
+ * Deleting on Splitwise is done before removing the local record; Splitwise
+ * treats deleting an already-deleted expense as a success, so a retry after a
+ * partial failure safely converges.
+ */
+export const unpostBill = action({
+  args: {
+    billId: v.id('bills'),
+  },
+  handler: async (
+    ctx,
+    args,
+  ): Promise<{
+    expenseIds: number[];
+    groupId: number;
+  }> => {
+    const ownerClerkUserId = await requireIdentitySubject(ctx);
+
+    const connection = await ctx.runQuery(
+      internal.splitwiseStore.getConnectionForOwner,
+      { ownerClerkUserId },
+    );
+    if (connection === null) {
+      throw new Error(
+        'Splitwise is not connected. Run `mobills integration splitwise setup`.',
+      );
+    }
+
+    const bill = await ctx.runQuery(internal.bills.getBillForOwner, {
+      billId: args.billId,
+      ownerClerkUserId,
+    });
+    if (bill === null) {
+      throw new Error('Bill not found');
+    }
+
+    const posting = bill.postings.find((p) => p.integration === 'splitwise');
+    if (posting === undefined) {
+      throw new Error('This bill has not been posted to Splitwise.');
+    }
+
+    const expenseIds = parseExpenseIds(posting.reference);
+
+    const apiKey = await openSecret({
+      ciphertext: connection.ciphertext,
+      iv: connection.iv,
+      authTag: connection.authTag,
+    });
+    const client = new SplitwiseClient({
+      apiKey,
+      ...(connection.baseUrl ? { baseUrl: connection.baseUrl } : {}),
+    });
+
+    for (const expenseId of expenseIds) {
+      await client.deleteExpense(expenseId);
+    }
+
+    await ctx.runMutation(internal.bills.removePosting, {
+      billId: args.billId,
+      ownerClerkUserId,
+      integration: 'splitwise',
+    });
+
+    return {
+      expenseIds,
+      groupId: posting.groupId ?? 0,
     };
   },
 });

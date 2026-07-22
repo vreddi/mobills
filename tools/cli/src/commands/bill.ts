@@ -618,4 +618,53 @@ export function registerBillCommands(program: Command): void {
         );
       },
     );
+
+  bill
+    .command('unpost')
+    .description("Reverse a bill's Splitwise posting by deleting the expense")
+    .requiredOption('--bill <billId>', 'Bill id (see `mobills bill list`)')
+    .option('--yes', 'Skip the confirmation prompt')
+    .action(async (opts: { bill: string; yes?: boolean }) => {
+      const client = getConvexClient();
+      const b = (await client.query(api.bills.getBill, {
+        billId: opts.bill as Id<'bills'>,
+      })) as Doc<'bills'>;
+
+      const posting = b.postings.find((p) => p.integration === 'splitwise');
+      if (!posting) {
+        throw new Error('This bill has not been posted to Splitwise.');
+      }
+
+      console.log(
+        `\n${chalk.bold(b.label)} — ${centsToString(b.totalCents)} ` +
+          `${b.currencyCode}\n` +
+          `Reversing Splitwise expense ${posting.reference}` +
+          `${posting.groupId ? ` (group ${posting.groupId})` : ''}, posted ` +
+          `${new Date(posting.postedAt).toLocaleString()}.`,
+      );
+
+      if (!opts.yes) {
+        requireTty('Confirming a Splitwise unpost');
+        const ok = await confirm({
+          message:
+            'Delete this expense from Splitwise? This cannot be undone.',
+          default: false,
+        });
+        if (!ok) {
+          console.log('Aborted. Nothing was changed.');
+          return;
+        }
+      }
+
+      const result = await client.action(api.splitwise.unpostBill, {
+        billId: opts.bill as Id<'bills'>,
+      });
+      const ids = result.expenseIds.join(', ');
+      console.log(
+        chalk.green(
+          `\nReversed Splitwise posting: deleted expense ${ids}. ` +
+            'The bill can be posted again.',
+        ),
+      );
+    });
 }

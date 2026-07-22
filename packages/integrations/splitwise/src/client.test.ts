@@ -129,4 +129,43 @@ describe('SplitwiseClient', () => {
       }),
     ).rejects.toThrow(/Something went wrong/);
   });
+
+  it('posts to delete_expense/{id} and resolves on success', async () => {
+    const { impl, calls } = fakeFetch({ success: true, errors: {} });
+    const client = new SplitwiseClient({
+      apiKey: 'k',
+      fetch: impl as unknown as typeof fetch,
+    });
+
+    await expect(client.deleteExpense(42)).resolves.toBeUndefined();
+
+    expect(calls[0].url).toBe(
+      'https://secure.splitwise.com/api/v3.0/delete_expense/42',
+    );
+    expect(calls[0].init.method).toBe('POST');
+  });
+
+  it('throws SplitwiseApiError when delete_expense reports success: false', async () => {
+    const { impl } = fakeFetch({
+      success: false,
+      errors: { base: ['Invalid API Request: record not found'] },
+    });
+    const client = new SplitwiseClient({
+      apiKey: 'k',
+      fetch: impl as unknown as typeof fetch,
+    });
+
+    await expect(client.deleteExpense(7)).rejects.toThrow(/record not found/);
+  });
+
+  it('rejects a non-positive expense id without calling fetch', async () => {
+    const { impl, calls } = fakeFetch({ success: true });
+    const client = new SplitwiseClient({
+      apiKey: 'k',
+      fetch: impl as unknown as typeof fetch,
+    });
+
+    await expect(client.deleteExpense(0)).rejects.toThrow(/Invalid Splitwise/);
+    expect(calls).toHaveLength(0);
+  });
 });

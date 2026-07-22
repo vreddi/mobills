@@ -167,6 +167,36 @@ export class SplitwiseClient {
     return expense;
   }
 
+  /**
+   * Delete a previously-created expense, reversing a posting. Splitwise soft
+   * deletes the expense; deleting an already-deleted expense is a no-op and
+   * still reports success, so this is safe to retry.
+   */
+  async deleteExpense(expenseId: number): Promise<void> {
+    if (!Number.isInteger(expenseId) || expenseId <= 0) {
+      throw new Error(`Invalid Splitwise expense id: ${expenseId}`);
+    }
+
+    const data = await this.request<{
+      success?: boolean;
+      errors?: Record<string, string[]> | string[];
+    }>('POST', `delete_expense/${expenseId}`);
+
+    const hasErrors = Array.isArray(data.errors)
+      ? data.errors.length > 0
+      : data.errors !== undefined && Object.keys(data.errors).length > 0;
+    if (hasErrors) {
+      throw new SplitwiseApiError(formatErrors(data.errors), 200, data.errors);
+    }
+    if (data.success === false) {
+      throw new SplitwiseApiError(
+        `Splitwise did not delete expense ${expenseId}`,
+        200,
+        data,
+      );
+    }
+  }
+
   private async request<T>(
     method: 'GET' | 'POST',
     path: string,
