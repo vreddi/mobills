@@ -32,9 +32,13 @@ export function InstallTabs({
   const [manager, setManager] = useState<Manager>('npm');
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (isManager(saved)) {
-      setManager(saved);
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (isManager(saved)) {
+        setManager(saved);
+      }
+    } catch {
+      // Ignore storage failures (private mode, etc.) — keep the default tab.
     }
   }, []);
 
