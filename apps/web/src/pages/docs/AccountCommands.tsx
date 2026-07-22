@@ -33,6 +33,25 @@ export function DocsAccountCommands() {
   ID            NAME          PLAN
   fam_plan_01   Family Plan   Magenta MAX`}
       />
+      <H2>account edit</H2>
+      <P>
+        Update an account's name, carrier account number, or plan. Each optional
+        field has a matching <Code>--clear-*</Code> flag to remove it.
+      </P>
+      <CodeBlock
+        label="Terminal"
+        code={`$ mobills account edit --account fam_plan_01 --plan "Go5G Plus"
+✓ Updated account fam_plan_01`}
+      />
+      <OptionsTable
+        rows={[
+          { flag: '--account <accountId>', description: 'Account id to edit (prompts a picker when omitted).' },
+          { flag: '--name <name>', description: 'New display name for the account.' },
+          { flag: '--account-number <number>', description: 'New carrier account number.' },
+          { flag: '--plan <plan>', description: 'New plan name.' },
+          { flag: '--clear-account-number, --clear-plan', description: 'Remove the corresponding field.' },
+        ]}
+      />
       <PagerNav
         prev={{ to: '/docs/providers/tmobile', label: 'T-Mobile' }}
         next={{ to: '/docs/commands/member', label: 'mobills member' }}

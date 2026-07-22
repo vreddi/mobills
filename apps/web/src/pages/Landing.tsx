@@ -13,12 +13,10 @@ import { Button } from '@/components/motion/button/base';
 import { ScrollReveal } from '@/components/motion/scroll-reveal';
 import { TextReveal } from '@/components/motion/text-reveal';
 import { TiltCard } from '@/components/motion/tilt-card';
-import { CopyButton } from '@/components/site/CopyButton';
+import { InstallTabs } from '@/components/site/InstallTabs';
 import { Footer } from '@/components/site/Footer';
 import { Nav } from '@/components/site/Nav';
 import { Terminal } from '@/components/site/Terminal';
-
-const INSTALL_COMMAND = 'pnpm add -g @mobills/cli';
 
 export function LandingPage() {
   return (
@@ -58,13 +56,7 @@ function Hero() {
           each person&apos;s share straight to Splitwise.
         </p>
 
-        <div className="mt-8 flex items-center gap-2 rounded-xl border border-border bg-card py-1.5 pl-4 pr-1.5">
-          <code className="font-mono text-sm text-foreground">
-            <span className="select-none text-primary">$ </span>
-            {INSTALL_COMMAND}
-          </code>
-          <CopyButton text={INSTALL_COMMAND} />
-        </div>
+        <InstallTabs pkg="@mobills/cli" className="mt-8 w-full max-w-sm" />
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <Link to="/docs">

@@ -42,6 +42,7 @@ const SECTIONS: DocSection[] = [
     links: [
       { to: '/docs/commands/account', label: 'mobills account', keywords: 'create list plan' },
       { to: '/docs/commands/member', label: 'mobills member', keywords: 'add list line share' },
+      { to: '/docs/commands/bill', label: 'mobills bill', keywords: 'bill divide split create post total tax equipment extra cadence' },
     ],
   },
   {
@@ -61,7 +62,7 @@ const SECTIONS: DocSection[] = [
       {
         to: '/docs/skills',
         label: 'Agent skills',
-        keywords: 'skill claude agent import tmobile lines link splitwise automate',
+        keywords: 'skill claude agent import tmobile lines bill pdf statement link splitwise automate',
       },
     ],
   },

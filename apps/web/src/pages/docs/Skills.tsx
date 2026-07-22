@@ -39,6 +39,24 @@ export function DocsSkills() {
 ✓ Added Priya, Rohan, Anaya to fam_plan_01`}
       />
 
+      <H2>import-tmobile-bill</H2>
+      <P>
+        Turns a T-Mobile <em>summary</em> bill PDF into a mobills bill. It reads
+        the per-line summary table, splits the shared plan cost equally, assigns
+        each line's equipment and one-time charges to its member, and shows the
+        full division for you to confirm before running{' '}
+        <Code>mobills bill create</Code>. The detailed PDF isn't needed, and no
+        T-Mobile login is ever involved.
+      </P>
+      <CodeBlock
+        label="Claude Code"
+        code={`> create a bill from this T-Mobile PDF
+
+✓ Parsed 6 lines · plans $260.00 · one-time $2.43 → $262.43
+✓ Base split $43.33-43.34/line · (470) 263-6588 +$2.43 — confirm?
+✓ Created bill "Jul 2026 0" (262.43 USD)`}
+      />
+
       <H2>link-splitwise-members</H2>
       <P>
         Finds the right Splitwise group for your plan, matches each member to

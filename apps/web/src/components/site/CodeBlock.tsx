@@ -11,14 +11,16 @@ export interface CodeBlockProps {
 /**
  * Dark code panel with a copy button. Lines starting with "$ " render the
  * prompt dimmed and the command bright; other lines render as output.
- * Copy strips the "$ " prompts so the result is paste-able.
+ * Copy strips input prompts so the result is paste-able.
  */
 export function CodeBlock({ code, label = 'Terminal', className }: CodeBlockProps) {
   const lines = code.replace(/\n$/, '').split('\n');
-  const copyText = lines
-    .filter((l) => !l.startsWith('# '))
-    .map((l) => (l.startsWith('$ ') ? l.slice(2) : l))
-    .join('\n');
+  const inputLines = lines.filter((l) => l.startsWith('$ ') || l.startsWith('> '));
+  const copyText = (
+    inputLines.length > 0
+      ? inputLines.map((l) => l.slice(2))
+      : lines.filter((l) => !l.startsWith('# '))
+  ).join('\n');
 
   return (
     <div className={cn('overflow-hidden rounded-xl border border-border bg-card', className)}>

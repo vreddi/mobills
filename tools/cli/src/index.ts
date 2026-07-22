@@ -2,6 +2,7 @@
 import { Command } from 'commander';
 import { registerAccountCommands } from './commands/account.js';
 import { registerAuthCommands } from './commands/auth.js';
+import { registerBillCommands } from './commands/bill.js';
 import { registerIntegrationCommands } from './commands/integration.js';
 import { registerMemberCommands } from './commands/member.js';
 
@@ -27,6 +28,7 @@ program.on('option:v', () => {
 registerAuthCommands(program);
 registerAccountCommands(program);
 registerMemberCommands(program);
+registerBillCommands(program);
 registerIntegrationCommands(program);
 
 function describeError(error: unknown): string {

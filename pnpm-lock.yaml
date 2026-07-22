@@ -64,8 +64,23 @@ importers:
         specifier: ^6.0.0
         version: 6.4.3(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.1)(yaml@2.9.0)
 
+  packages/billing:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.0
+        version: 22.20.1
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.1)(yaml@2.9.0)
+
   packages/convex:
     dependencies:
+      '@mobills/billing':
+        specifier: workspace:*
+        version: link:../billing
       '@mobills/integration-splitwise':
         specifier: workspace:*
         version: link:../integrations/splitwise
@@ -116,6 +131,9 @@ importers:
       '@inquirer/prompts':
         specifier: ^8.5.2
         version: 8.5.2(@types/node@22.20.1)
+      '@mobills/billing':
+        specifier: workspace:*
+        version: link:../../packages/billing
       chalk:
         specifier: ^5.3.0
         version: 5.6.2

@@ -27,6 +27,7 @@
   "dependencies": {
     "@clerk/backend": "^1.21.0",
     "@inquirer/prompts": "^8.5.2",
+    "@mobills/billing": "workspace:*",
     "chalk": "^5.3.0",
     "cli-table3": "^0.6.5",
     "commander": "^12.1.0",
