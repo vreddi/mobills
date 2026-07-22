@@ -171,7 +171,11 @@ export const getBillForOwner = internalQuery({
 
 /** Internal: reserve a bill before posting it to Splitwise. */
 export const beginSplitwisePosting = internalMutation({
-  args: { billId: v.id('bills'), ownerClerkUserId: v.string() },
+  args: {
+    billId: v.id('bills'),
+    ownerClerkUserId: v.string(),
+    token: v.string(),
+  },
   handler: async (ctx, args) => {
     const bill = await ctx.db.get(args.billId);
     if (bill === null) {
@@ -185,21 +189,28 @@ export const beginSplitwisePosting = internalMutation({
     }
 
     const now = Date.now();
+    const lock = bill.splitwisePostingLock;
     if (
-      bill.splitwisePostingStartedAt !== undefined &&
-      now - bill.splitwisePostingStartedAt < LOCK_TTL_MS
+      lock !== undefined &&
+      now - lock.startedAt < LOCK_TTL_MS
     ) {
       throw new Error('A Splitwise post for this bill is already in progress.');
     }
 
-    await ctx.db.patch(args.billId, { splitwisePostingStartedAt: now });
+    await ctx.db.patch(args.billId, {
+      splitwisePostingLock: { token: args.token, startedAt: now },
+    });
     return args.billId;
   },
 });
 
 /** Internal: release a Splitwise posting reservation after a failed post. */
 export const releaseSplitwisePosting = internalMutation({
-  args: { billId: v.id('bills'), ownerClerkUserId: v.string() },
+  args: {
+    billId: v.id('bills'),
+    ownerClerkUserId: v.string(),
+    token: v.string(),
+  },
   handler: async (ctx, args) => {
     const bill = await ctx.db.get(args.billId);
     if (bill === null) {
@@ -208,9 +219,9 @@ export const releaseSplitwisePosting = internalMutation({
     if (bill.ownerClerkUserId !== args.ownerClerkUserId) {
       throw new Error('Not authorized for this bill');
     }
-    if (bill.splitwisePostingStartedAt !== undefined) {
+    if (bill.splitwisePostingLock?.token === args.token) {
       await ctx.db.patch(args.billId, {
-        splitwisePostingStartedAt: undefined,
+        splitwisePostingLock: undefined,
       });
     }
     return args.billId;
@@ -225,6 +236,7 @@ export const appendPosting = internalMutation({
     integration: v.literal('splitwise'),
     reference: v.string(),
     groupId: v.optional(v.number()),
+    token: v.string(),
   },
   handler: async (ctx, args) => {
     const bill = await ctx.db.get(args.billId);
@@ -242,6 +254,9 @@ export const appendPosting = internalMutation({
         `This bill has already been posted to ${args.integration}.`,
       );
     }
+    if (bill.splitwisePostingLock?.token !== args.token) {
+      throw new Error('Splitwise posting reservation expired or was superseded');
+    }
     await ctx.db.patch(args.billId, {
       postings: [
         ...bill.postings,
@@ -252,7 +267,7 @@ export const appendPosting = internalMutation({
           postedAt: Date.now(),
         },
       ],
-      splitwisePostingStartedAt: undefined,
+      splitwisePostingLock: undefined,
     });
     return args.billId;
   },

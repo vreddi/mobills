@@ -7,6 +7,7 @@ import {
   SplitwiseClient,
 } from '@mobills/integration-splitwise';
 import { v } from 'convex/values';
+import { randomUUID } from 'node:crypto';
 import { internal } from './_generated/api';
 import type { Id } from './_generated/dataModel';
 import { action, type ActionCtx } from './_generated/server';
@@ -242,9 +243,11 @@ export const postBill = action({
           : 0;
     }
 
+    const reservationToken = randomUUID();
     await ctx.runMutation(internal.bills.beginSplitwisePosting, {
       billId: args.billId,
       ownerClerkUserId,
+      token: reservationToken,
     });
 
     const expense = await (async () => {
@@ -275,6 +278,7 @@ export const postBill = action({
           .runMutation(internal.bills.releaseSplitwisePosting, {
             billId: args.billId,
             ownerClerkUserId,
+            token: reservationToken,
           })
           .catch(() => undefined);
         throw error;
@@ -287,6 +291,7 @@ export const postBill = action({
       integration: 'splitwise',
       reference: String(expense.id),
       groupId,
+      token: reservationToken,
     });
 
     return {

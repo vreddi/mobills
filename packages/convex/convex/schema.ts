@@ -61,7 +61,9 @@ export default defineSchema({
         postedAt: v.number(),
       }),
     ),
-    splitwisePostingStartedAt: v.optional(v.number()),
+    splitwisePostingLock: v.optional(
+      v.object({ token: v.string(), startedAt: v.number() }),
+    ),
     createdAt: v.number(),
   }).index('by_account', ['accountId']),
 
