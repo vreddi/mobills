@@ -53,7 +53,7 @@ export function DocsSkills() {
         code={`> create a bill from this T-Mobile PDF
 
 ✓ Parsed 6 lines · plans $260.00 · one-time $2.43 → $262.43
-✓ Base split $43.33/line · (470) 263-6588 +$2.43 — confirm?
+✓ Base split $43.33-43.34/line · (470) 263-6588 +$2.43 — confirm?
 ✓ Created bill "Jul 2026 0" (262.43 USD)`}
       />
 

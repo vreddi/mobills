@@ -37,9 +37,9 @@ export function DocsSplitwise() {
         >
           secure.splitwise.com/apps
         </a>
-        ) and stores it <strong>encrypted in the mobills backend</strong> — the
-        key never touches this machine, and every Splitwise call runs
-        server-side.
+        ) and sends it once to be stored{' '}
+        <strong>encrypted in the mobills backend</strong>. The key is not
+        stored on this machine, and every Splitwise call runs server-side.
       </P>
       <CodeBlock
         label="Terminal"
@@ -133,9 +133,9 @@ $ mobills bill post --bill bill_jul26_00
       </P>
 
       <Callout>
-        The Splitwise API key lives encrypted in the mobills backend — the CLI
-        never sees or stores it. More integrations are on the roadmap; suggest
-        one on{' '}
+        The Splitwise API key is stored encrypted in the mobills backend and is
+        never written to disk on your machine. More integrations are on the
+        roadmap; suggest one on{' '}
         <a
           href="https://github.com/vreddi/mobills/issues"
           target="_blank"
