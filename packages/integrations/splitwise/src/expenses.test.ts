@@ -17,8 +17,8 @@ function postBillExpense(
   memberTotalsCents: number[],
   payerIndex: number,
 ) {
-  const participants: ExactParticipant[] = memberTotalsCents.map((cents) => ({
-    userId: 1000 + cents, // arbitrary but unique-ish stand-in user ids
+  const participants: ExactParticipant[] = memberTotalsCents.map((cents, index) => ({
+    userId: 1000 + index,
     amount: cents / 100,
   }));
   const totalCents = memberTotalsCents.reduce((sum, c) => sum + c, 0);
